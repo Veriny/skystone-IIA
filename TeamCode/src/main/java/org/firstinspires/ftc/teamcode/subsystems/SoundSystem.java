@@ -8,10 +8,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.R;
 
-public class SoundTeleOP {
+public class SoundSystem {
     public MediaPlayer DJ_Stalin;
 
-    public SoundTeleOP(MediaPlayer m){
+    public SoundSystem(MediaPlayer m){
         this.DJ_Stalin = m;
     }
 
@@ -20,10 +20,14 @@ public class SoundTeleOP {
             DJ_Stalin = null;
             DJ_Stalin =  MediaPlayer.create(hm.appContext, R.raw.gracious);
             t.addLine("Added 'Gracious Professionalism' to player");
+            DJ_Stalin.start();
             t.update();
         }
         if (gp.dpad_down) {
             DJ_Stalin = MediaPlayer.create(hm.appContext, R.raw.wegotem);
+            t.addLine("Added 'WeGotEm' to player");
+            DJ_Stalin.start();
+            t.update();
         }
         if (gp.dpad_left){
             DJ_Stalin.stop();
