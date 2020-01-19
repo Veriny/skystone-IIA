@@ -52,10 +52,10 @@ public class Drivetrain {
             y /=3;
             z/= 3;
         }
-        bottomLeft.setPower(-((x)+(y)+(-z)));
-        topLeft.setPower(-((x)+(-y)+(-z)));
-        bottomRight.setPower(-((-x)+(y)+(-z)));
-        topRight.setPower(-((-x)+(-y)+(-z)));
+        bottomLeft.setPower(((x)+(y)+(-z)));
+        topLeft.setPower(((x)+(-y)+(-z)));
+        bottomRight.setPower(((-x)+(y)+(-z)));
+        topRight.setPower(((-x)+(-y)+(-z)));
     }
 
     public void drive(double distance, double power) {
