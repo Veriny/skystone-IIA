@@ -70,6 +70,10 @@ public class Drivetrain {
         jigglypuff();
     }
 
+    public boolean skystoneIsCentered() {
+        return true;
+    }
+
     public void strafe(double distance, double power) {
         //TODO: Write code for strafing
         //This code is written such that right is positive.
@@ -114,6 +118,10 @@ public class Drivetrain {
 
     private double calculateTicks(double inches) {
         return (inches / (WHEEL_DIAMETER * Math.PI) * TICKS_PER_ROTATION);
+    }
+
+    private double calculateInches(double ticks) {
+        return (ticks * WHEEL_DIAMETER * Math.PI / TICKS_PER_ROTATION);
     }
 
     private void jigglypuff() {
