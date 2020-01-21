@@ -8,9 +8,9 @@ public class FoundationClaw {
     private Servo servoB;
 
     //servos in same orientation I think
-    private final double pushPositionA = 0.63;
-    private final double pushPositionB = 0.45;
-    private final double restPositionA = 0.08;
+    private final double pushPositionA = 0.85;
+    private final double pushPositionB = 0.15;
+    private final double restPositionA = 0.0;
     private final double restPositionB = 1.0;
     public FoundationClaw(Servo a, Servo b) {
         this.servoA = a;
@@ -20,11 +20,11 @@ public class FoundationClaw {
     }
 
     public void controls(Gamepad gp) {
-        if(gp.a) {
+        if(gp.dpad_down) {
             push();
         }
 
-        else if(gp.b) {
+        else if(gp.dpad_up) {
             rest();
         }
     }

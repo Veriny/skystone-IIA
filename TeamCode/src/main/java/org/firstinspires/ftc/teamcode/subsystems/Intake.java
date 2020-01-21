@@ -12,8 +12,8 @@ public class Intake {
     }
 
     public void controls(Gamepad gp) {
-        if (gp.left_bumper) succ(0.69420);
-        else if (gp.right_bumper) dontsucc(0.69420);
+        if (gp.left_bumper) dontsucc(0.69420);
+        else if (gp.right_bumper) succ(0.69420);
         else noSucc();
     }
 

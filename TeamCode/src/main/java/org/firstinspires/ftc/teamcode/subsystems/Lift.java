@@ -10,10 +10,10 @@ public class Lift {
     private DcMotor v4bMotor;
     private Servo clawServo;
     private int v4bMotorRestPos = 0;
-    private int v4bMotorLiftPos = 400;
-    private int v4bMotorDumpPos = 800;
-    private int liftMotorRestPos = 0;
-    private int liftMotorDumpPos = -800;
+    private int v4bMotorLiftPos = 200;
+    private int v4bMotorDumpPos = -300;
+    private int liftMotorRestPos = 100;
+    private int liftMotorDumpPos = 800;
 
     public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo) {
         this.liftMotor = liftMotor;

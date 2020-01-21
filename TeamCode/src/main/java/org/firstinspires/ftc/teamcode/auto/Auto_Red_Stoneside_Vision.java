@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="Red(Stoneside)_Collect_Deposit_FoundationDrag_Park", group = "test")
-public class Auto_Red_Stoneside extends LinearOpMode {
+@Autonomous(name="Red(Stoneside) Vision", group = "test")
+public class Auto_Red_Stoneside_Vision extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
     public Lift lift;
@@ -35,26 +35,26 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-        lift.release();
-        robot.strafe(24, 0.5);
         lift.liftV4BMotor();
+        lift.release();
+        robot.strafe(18, 0.5);
         boolean hasSkystone = false;
-//        for(int i = 0; i < 3; i++) {
-//            if (!robot.skystoneIsCentered()) {
-//                robot.drive(8, 0.5);
-//            }
-//            else {
-//                robot.turn(90, 0.5);
-//                intake.succ(0.69420 * 1.1);
-//                robot.drive(18, 0.3);
-//                intake.noSucc();
-//                lift.restV4BMotor();
-//                lift.hold();
-//                robot.drive(-16, 0.6);
-//                hasSkystone = true;
-//                return;
-//            }
-//        }
+        while(!robot.skystoneIsCentered() && robot.inchesMoved() <= 18) {
+            robot.driveNoDist(0.15);
+
+        }
+        double moveCount = robot.inchesMoved();
+        robot.resetEncoders();
+        robot.drive(-4, 0.5);
+        robot.turn(45, 0.5);
+        intake.succ(0.69420 * 1.1);
+        robot.drive(26, 0.2);
+        intake.noSucc();
+        lift.restV4BMotor();
+        lift.hold();
+        robot.drive(-16, 0.6);
+        hasSkystone = true;
+
 
         if(!hasSkystone) {
             robot.drive(-4, 0.5);
@@ -62,31 +62,30 @@ public class Auto_Red_Stoneside extends LinearOpMode {
             intake.succ(0.69420 * 1.1);
             robot.drive(26, 0.2);
             intake.noSucc();
-            robot.residentSleeper(100);
             lift.restV4BMotor();
-            robot.residentSleeper(1000);
             lift.hold();
-            robot.drive(-38, 0.6);
+            robot.drive(-25, 0.6);
         }
 
         phoneCam.stopStreaming();
-        robot.turn(-45, 0.4);
-        robot.drive(-68, 0.6);
-        robot.turn(-90, 0.5);
+        robot.turn(135, 0.4);
+        robot.drive(moveCount, 0.5);
+        robot.drive(78, 0.6);
+        robot.turn(90, 0.5);
 
         lift.dumpLiftMotor();
-        robot.residentSleeper(2500);
+        robot.residentSleeper(1500);
         lift.dumpV4BMotor();
         robot.residentSleeper(1000);
-        robot.drive(-8, 0.3);
+        robot.drive(-10, 0.3);
         lift.release();
         foundationClaw.push();
         robot.residentSleeper(500);
         lift.restV4BMotor();
         robot.residentSleeper(1000);
         lift.restLiftMotor();
-        robot.residentSleeper(750);
-        robot.arcTurn(90, 24, 0.2, true);
+
+        robot.drive(28, 0.4);
         foundationClaw.rest();
         robot.drive(-1, 0.5);
         robot.strafe(24, 0.6);
