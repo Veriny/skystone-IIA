@@ -26,7 +26,7 @@ public class Auto_Red_Stoneside extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new Drivetrain(hardwareMap.dcMotor.get("topLeftMotor"), hardwareMap.dcMotor.get("bottomLeftMotor"), hardwareMap.dcMotor.get("topRightMotor"), hardwareMap.dcMotor.get("bottomRightMotor"), true, telemetry);
         intake = new Intake(hardwareMap.dcMotor.get("leftIntake"), hardwareMap.dcMotor.get("rightIntake"));
-        lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"));
+        lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), true);
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -35,9 +35,9 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-        lift.release();
+        lift.releaseNoSync();
         robot.strafe(24, 0.5);
-        lift.liftV4BMotor();
+        lift.liftV4BMotorNoSync();
         boolean hasSkystone = false;
 //        for(int i = 0; i < 3; i++) {
 //            if (!robot.skystoneIsCentered()) {
@@ -45,11 +45,11 @@ public class Auto_Red_Stoneside extends LinearOpMode {
 //            }
 //            else {
 //                robot.turn(90, 0.5);
-//                intake.succ(0.69420 * 1.1);
+//                intake.succNoSync(0.69420 * 1.1);
 //                robot.drive(18, 0.3);
-//                intake.noSucc();
-//                lift.restV4BMotor();
-//                lift.hold();
+//                intake.noSuccNoSync();
+//                lift.restV4BMotorNoSync();
+//                lift.holdNoSync();
 //                robot.drive(-16, 0.6);
 //                hasSkystone = true;
 //                return;
@@ -59,13 +59,13 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         if(!hasSkystone) {
             robot.drive(-4, 0.5);
             robot.turn(45, 0.5);
-            intake.succ(0.69420 * 1.1);
+            intake.succNoSync(0.69420 * 1.1);
             robot.drive(26, 0.2);
-            intake.noSucc();
+            intake.noSuccNoSync();
             robot.residentSleeper(100);
-            lift.restV4BMotor();
+            lift.restV4BMotorNoSync();
             robot.residentSleeper(1000);
-            lift.hold();
+            lift.holdNoSync();
             robot.drive(-38, 0.6);
         }
 
@@ -74,20 +74,21 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         robot.drive(-68, 0.6);
         robot.turn(-90, 0.5);
 
-        lift.dumpLiftMotor();
-        robot.residentSleeper(2500);
-        lift.dumpV4BMotor();
+        lift.dumpLiftMotorNoSync();
+        robot.residentSleeper(2000);
+        lift.dumpV4BMotorNoSync();
         robot.residentSleeper(1000);
         robot.drive(-8, 0.3);
-        lift.release();
-        foundationClaw.push();
+        lift.releaseNoSync();
+        foundationClaw.pushNoSync();
         robot.residentSleeper(500);
-        lift.restV4BMotor();
-        robot.residentSleeper(1000);
-        lift.restLiftMotor();
+        lift.restV4BMotorNoSync();
+        robot.residentSleeper(1500);
+        lift.restLiftMotorNoSync();
         robot.residentSleeper(750);
-        robot.arcTurn(90, 24, 0.2, true);
-        foundationClaw.rest();
+        robot.arcTurn(90, 24, 0.3, true);
+        robot.residentSleeper(500);
+        foundationClaw.restNoSync();
         robot.drive(-1, 0.5);
         robot.strafe(24, 0.6);
         robot.drive(-20, 0.6);

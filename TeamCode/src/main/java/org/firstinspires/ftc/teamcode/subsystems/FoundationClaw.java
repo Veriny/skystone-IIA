@@ -29,14 +29,26 @@ public class FoundationClaw {
         }
     }
 
-    public void push() {
+    public synchronized void push() {
         servoA.setPosition(pushPositionA);
         servoB.setPosition(pushPositionB);
     }
 
-    public void rest() {
+    public synchronized void rest() {
         servoA.setPosition(restPositionA);
         servoB.setPosition(restPositionB);
     }
 
+
+
+
+    public void pushNoSync() {
+        servoA.setPosition(pushPositionA);
+        servoB.setPosition(pushPositionB);
+    }
+
+    public void restNoSync() {
+        servoA.setPosition(restPositionA);
+        servoB.setPosition(restPositionB);
+    }
 }

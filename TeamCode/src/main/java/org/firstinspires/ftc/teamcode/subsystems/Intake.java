@@ -31,4 +31,22 @@ public class Intake {
         left.setPower(0.0);
         right.setPower(0.0);
     }
+
+
+
+
+    public void succNoSync(double power) {
+        left.setPower(power);
+        right.setPower(-power);
+    }
+
+    public void dontsuccNoSync(double power) {
+        left.setPower(-power);
+        right.setPower(power);
+    }
+
+    public void noSuccNoSync() {
+        left.setPower(0.0);
+        right.setPower(0.0);
+    }
 }
