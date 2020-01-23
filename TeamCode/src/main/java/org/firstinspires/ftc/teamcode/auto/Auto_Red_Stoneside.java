@@ -36,7 +36,9 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         phoneCam.setPipeline(vision);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
         lift.releaseNoSync();
+        robot.update();
         robot.strafe(24, 0.5);
+        robot.update();
         lift.liftV4BMotorNoSync();
         boolean hasSkystone = false;
 //        for(int i = 0; i < 3; i++) {

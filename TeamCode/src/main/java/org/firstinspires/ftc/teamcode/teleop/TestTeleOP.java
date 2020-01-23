@@ -3,7 +3,8 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 
-import org.firstinspires.ftc.teamcode.subsystems.Lift;import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.FoundationClaw;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
@@ -29,6 +30,7 @@ public class TestTeleOP extends OpMode {
     public void start() {
         super.start();
         telemetry.addLine("Robot started");
+        telemetry.addData("V4B PIDF: ", lift.liftInfo());
     }
 
     @Override
@@ -45,5 +47,6 @@ public class TestTeleOP extends OpMode {
     public void stop() {
         super.stop();
         telemetry.addLine("Robot stopped");
+
     }
 }
