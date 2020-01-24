@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="Red(Stoneside)_Collect_Deposit_FoundationDrag_Park", group = "test")
-public class Auto_Red_Stoneside extends LinearOpMode {
+@Autonomous(name="Red(Buildside) Vision", group = "test")
+public class Auto_Red_Buildside_Vision extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
     public Lift lift;
@@ -30,51 +30,50 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        vision = new SkystoneContour();
 
         waitForStart();
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-        lift.releaseNoSync();
-        robot.update();
-        robot.strafe(24, 0.5);
-        robot.update();
         lift.liftV4BMotorNoSync();
-        boolean hasSkystone = false;
-//        for(int i = 0; i < 3; i++) {
-//            if (!robot.skystoneIsCentered()) {
-//                robot.drive(8, 0.5);
-//            }
-//            else {
-//                robot.turn(90, 0.5);
-//                intake.succNoSync(0.69420 * 1.1);
-//                robot.drive(18, 0.3);
-//                intake.noSuccNoSync();
-//                lift.restV4BMotorNoSync();
-//                lift.holdNoSync();
-//                robot.drive(-16, 0.6);
-//                hasSkystone = true;
-//                return;
-//            }
+        lift.releaseNoSync();
+        robot.strafe(18, 0.5);
+        robot.drive(20, 0.6);
+//        boolean hasSkystone = false;
+        while(!vision.skystoneIsCentered() && robot.inchesMoved() <= 18) {
+            robot.driveNoDist(0.15);
+
+        }
+        double moveCount = robot.inchesMoved();
+        robot.resetEncoders();
+        robot.drive(-4, 0.5);
+        robot.turn(45, 0.5);
+        intake.succNoSync(0.69420 * 1.1);
+        robot.drive(26, 0.2);
+        intake.noSuccNoSync();
+        lift.restV4BMotorNoSync();
+        lift.holdNoSync();
+        robot.drive(-38, 0.6);
+//        hasSkystone = true;
+//
+//
+//        if(!hasSkystone) {
+//            robot.drive(-4, 0.5);
+//            robot.turn(45, 0.5);
+//            intake.succNoSync(0.69420 * 1.1);
+//            robot.drive(26, 0.2);
+//            intake.noSuccNoSync();
+//            lift.restV4BMotorNoSync();
+//            lift.holdNoSync();
+//            robot.drive(-16, 0.6);
 //        }
 
-        if(!hasSkystone) {
-            robot.drive(-4, 0.5);
-            robot.turn(45, 0.5);
-            intake.succNoSync(0.69420 * 1.1);
-            robot.drive(26, 0.2);
-            intake.noSuccNoSync();
-            robot.residentSleeper(100);
-            lift.restV4BMotorNoSync();
-            robot.residentSleeper(1000);
-            lift.holdNoSync();
-            robot.drive(-38, 0.6);
-        }
-
         phoneCam.stopStreaming();
-        robot.turn(-45, 0.4);
-        robot.drive(-68, 0.6);
-        robot.turn(-90, 0.5);
+        robot.turn(135, 0.4);
+        robot.drive(moveCount, 0.5);
+        robot.drive(78, 0.6);
+        robot.turn(90, 0.5);
 
         lift.dumpLiftMotorNoSync();
         robot.residentSleeper(2000);

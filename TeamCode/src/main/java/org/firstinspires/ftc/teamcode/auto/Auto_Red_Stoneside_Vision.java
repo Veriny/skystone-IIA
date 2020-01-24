@@ -39,7 +39,7 @@ public class Auto_Red_Stoneside_Vision extends LinearOpMode {
         lift.liftV4BMotorNoSync();
         lift.releaseNoSync();
         robot.strafe(18, 0.5);
-        boolean hasSkystone = false;
+        //boolean hasSkystone = false;
         while(!vision.skystoneIsCentered() && robot.inchesMoved() <= 18) {
             robot.driveNoDist(0.15);
 
@@ -53,20 +53,20 @@ public class Auto_Red_Stoneside_Vision extends LinearOpMode {
         intake.noSuccNoSync();
         lift.restV4BMotorNoSync();
         lift.holdNoSync();
-        robot.drive(-16, 0.6);
-        hasSkystone = true;
-
-
-        if(!hasSkystone) {
-            robot.drive(-4, 0.5);
-            robot.turn(45, 0.5);
-            intake.succNoSync(0.69420 * 1.1);
-            robot.drive(26, 0.2);
-            intake.noSuccNoSync();
-            lift.restV4BMotorNoSync();
-            lift.holdNoSync();
-            robot.drive(-25, 0.6);
-        }
+        robot.drive(-38, 0.6);
+//        hasSkystone = true;
+//
+//
+//        if(!hasSkystone) {
+//            robot.drive(-4, 0.5);
+//            robot.turn(45, 0.5);
+//            intake.succNoSync(0.69420 * 1.1);
+//            robot.drive(26, 0.2);
+//            intake.noSuccNoSync();
+//            lift.restV4BMotorNoSync();
+//            lift.holdNoSync();
+//            robot.drive(-25, 0.6);
+//        }
 
         phoneCam.stopStreaming();
         robot.turn(135, 0.4);
@@ -75,19 +75,21 @@ public class Auto_Red_Stoneside_Vision extends LinearOpMode {
         robot.turn(90, 0.5);
 
         lift.dumpLiftMotorNoSync();
-        robot.residentSleeper(1500);
+        robot.residentSleeper(2000);
         lift.dumpV4BMotorNoSync();
         robot.residentSleeper(1000);
-        robot.drive(-10, 0.3);
+        robot.drive(-8, 0.3);
         lift.releaseNoSync();
         foundationClaw.pushNoSync();
         robot.residentSleeper(500);
         lift.restV4BMotorNoSync();
-        robot.residentSleeper(1000);
+        robot.residentSleeper(1500);
         lift.restLiftMotorNoSync();
-
-        robot.drive(28, 0.4);
+        robot.residentSleeper(750);
+        robot.arcTurn(90, 24, 0.3, true);
+        robot.residentSleeper(500);
         foundationClaw.restNoSync();
+
         robot.drive(-1, 0.5);
         robot.strafe(24, 0.6);
         robot.drive(-20, 0.6);
