@@ -30,6 +30,7 @@ public class Auto_Red_Stoneside_Vision extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        vision = new SkystoneContour();
 
         waitForStart();
         phoneCam.openCameraDevice();
@@ -39,7 +40,7 @@ public class Auto_Red_Stoneside_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.strafe(18, 0.5);
         boolean hasSkystone = false;
-        while(!robot.skystoneIsCentered() && robot.inchesMoved() <= 18) {
+        while(!vision.skystoneIsCentered() && robot.inchesMoved() <= 18) {
             robot.driveNoDist(0.15);
 
         }

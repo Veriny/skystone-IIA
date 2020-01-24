@@ -24,14 +24,29 @@ public class VisionTestOP extends LinearOpMode {
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
         waitForStart();
+        vision = new SkystoneContour();
+        vision.setShowContours(true);
+        vision.setTelemetry(telemetry);
+        phoneCam.setPipeline(vision);
+        phoneCam.openCameraDevice();
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
 
-        for(int i = 0; i < 5; i++) {
-            telemetry.addLine("X Position: " + vision.getContourXPosTest());
-            robot.residentSleeper(1000);
-        }
-        if(robot.skystoneIsCentered()) {
+        if(vision.skystoneIsCentered()) {
             telemetry.addLine("Camera working");
+            telemetry.addLine("X-Pos: " + vision.getContourXPos() + ", Y-Pos: " + vision.getContourYPos());
+        }
+        waitForStart();
+        while(opModeIsActive()) {
+            telemetry.addData("Frame Count", phoneCam.getFrameCount());
+            telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
+            telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
+            telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
+            telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
+            telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
+            telemetry.addData("Contour count", vision.getContourFoundCount());
+            telemetry.addData("X-Pos: ", vision.getContourXPos());
+            telemetry.addData("Y-Pos: ", vision.getContourYPos());
+            telemetry.update();
         }
     }
 }

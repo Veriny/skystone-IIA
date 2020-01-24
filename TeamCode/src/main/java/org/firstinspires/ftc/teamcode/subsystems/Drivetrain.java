@@ -131,31 +131,26 @@ public class Drivetrain {
         jigglypuff();
     }
 
-    public void skystoneTest() {
-        double xLocation = skystoneContour.getContourXPosTest();
-        telemetry.addLine("Skystone x position: " + xLocation);
-    }
-
-    public boolean skystoneIsCentered() {
-        boolean xCoordCentered = false;
-        boolean yCoordCentered = false;
-        ArrayList<Double> xPositions = skystoneContour.getContourXPos();
-        ArrayList<Double> yPositions = skystoneContour.getContourYPos();
-        if(xPositions.size() == 0 || yPositions.size() == 0) {
-            return false;
-        }
-        for(int contourX = 0; contourX < xPositions.size(); contourX++) {
-            if(xPositions.get(contourX) > 140 && 180 > xPositions.get(contourX)) {
-                xCoordCentered = true;
-            }
-        }
-        for(int contourY = 0; contourY < yPositions.size(); contourY++) {
-            if(yPositions.get(contourY) > 100 && 140 > yPositions.get(contourY)) {
-                yCoordCentered = true;
-            }
-        }
-        return xCoordCentered && yCoordCentered;
-    }
+//    public boolean skystoneIsCentered() {
+//        boolean xCoordCentered = false;
+//        boolean yCoordCentered = false;
+//        ArrayList<Double> xPositions = skystoneContour.getContourXPos();
+//        ArrayList<Double> yPositions = skystoneContour.getContourYPos();
+//        if(xPositions.size() == 0 || yPositions.size() == 0) {
+//            return false;
+//        }
+//        for(int contourX = 0; contourX < xPositions.size(); contourX++) {
+//            if(xPositions.get(contourX) > 140 && 180 > xPositions.get(contourX)) {
+//                xCoordCentered = true;
+//            }
+//        }
+//        for(int contourY = 0; contourY < yPositions.size(); contourY++) {
+//            if(yPositions.get(contourY) > 100 && 140 > yPositions.get(contourY)) {
+//                yCoordCentered = true;
+//            }
+//        }
+//        return xCoordCentered && yCoordCentered;
+//    }
 
     public void strafe(double distance, double power) {
         //TODO: Write code for strafing

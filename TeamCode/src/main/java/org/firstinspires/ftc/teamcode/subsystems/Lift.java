@@ -15,8 +15,9 @@ public class Lift {
     private DcMotor v4bMotor;
     private Servo clawServo;
     private int v4bMotorRestPos = 0;
-    private int v4bMotorLiftPos = 100;
-    private int v4bMotorDumpPos = -250;
+    private int v4bMotorLiftPos = 150;
+    private int v4bMotorDownPos = -250;
+    private int v4bMotorDumpPos = -400;
     private int liftMotorRestPos = 50;
     private int liftMotorDumpPos = 800;
     private DcMotorControllerEx v4bControllerEx;
@@ -114,19 +115,23 @@ public class Lift {
     public synchronized void restV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorRestPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.25);
+        v4bMotor.setPower(0.5);
     }
 
     public synchronized void liftV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.4);
+        v4bMotor.setPower(0.9);
     }
 
     public synchronized void dumpV4BMotor() {
-        v4bMotor.setTargetPosition(v4bMotorDumpPos);
+        v4bMotor.setTargetPosition(v4bMotorDownPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         v4bMotor.setPower(0.4);
+        while(v4bMotor.isBusy());
+        v4bMotor.setTargetPosition(v4bMotorDumpPos);
+        v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        v4bMotor.setPower(0.9);
     }
 
 
@@ -165,11 +170,11 @@ public class Lift {
 
 
     public void holdNoSync() {
-        clawServo.setPosition(0.5);
+        clawServo.setPosition(0.42);
     }
 
     public void releaseNoSync() {
-        clawServo.setPosition(0.0);
+        clawServo.setPosition(0.2);
     }
 
 //    public PIDFCoefficients liftInfo() {
