@@ -16,16 +16,16 @@ public class Lift {
     private Servo clawServo;
     private int v4bMotorRestPos = 0;
     private int v4bMotorLiftPos = 100;
-    private int v4bMotorDumpPos = -325;
+    private int v4bMotorDumpPos = -250;
     private int liftMotorRestPos = 50;
     private int liftMotorDumpPos = 800;
     private DcMotorControllerEx v4bControllerEx;
 
     public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, boolean isAuto) {
-        v4bControllerEx = (DcMotorControllerEx)v4bMotor.getController();
-        PIDFCoefficients pidNew = new PIDFCoefficients(0.993, 0.1, 0, 9.93);
-
-        v4bControllerEx.setPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+//        v4bControllerEx = (DcMotorControllerEx)v4bMotor.getController();
+//        PIDFCoefficients pidNew = new PIDFCoefficients(0, 0.0, 0.0, 0.004);
+//
+//        v4bControllerEx.setPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
 
         if(isAuto) {
             this.liftMotor = liftMotor;
@@ -104,7 +104,7 @@ public class Lift {
     }
 
     public synchronized void hold() {
-        clawServo.setPosition(0.4);
+        clawServo.setPosition(0.43);
     }
 
     public synchronized void release() {
@@ -114,19 +114,19 @@ public class Lift {
     public synchronized void restV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorRestPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //v4bMotor.setPower(0.25);
+        v4bMotor.setPower(0.25);
     }
 
     public synchronized void liftV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
-
-        //v4bMotor.setPower(0.7);
+        v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        v4bMotor.setPower(0.4);
     }
 
     public synchronized void dumpV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorDumpPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //v4bMotor.setPower(0.7);
+        v4bMotor.setPower(0.4);
     }
 
 
@@ -172,7 +172,7 @@ public class Lift {
         clawServo.setPosition(0.0);
     }
 
-    public PIDFCoefficients liftInfo() {
-        return v4bControllerEx.getPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+//    public PIDFCoefficients liftInfo() {
+//        return v4bControllerEx.getPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER);
+//    }
 }

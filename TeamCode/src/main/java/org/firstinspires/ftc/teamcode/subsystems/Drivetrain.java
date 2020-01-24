@@ -131,6 +131,11 @@ public class Drivetrain {
         jigglypuff();
     }
 
+    public void skystoneTest() {
+        double xLocation = skystoneContour.getContourXPosTest();
+        telemetry.addLine("Skystone x position: " + xLocation);
+    }
+
     public boolean skystoneIsCentered() {
         boolean xCoordCentered = false;
         boolean yCoordCentered = false;

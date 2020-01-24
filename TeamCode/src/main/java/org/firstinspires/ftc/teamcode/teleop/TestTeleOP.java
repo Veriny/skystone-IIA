@@ -30,7 +30,7 @@ public class TestTeleOP extends OpMode {
     public void start() {
         super.start();
         telemetry.addLine("Robot started");
-        telemetry.addData("V4B PIDF: ", lift.liftInfo());
+//        telemetry.addData("V4B PIDF: ", lift.liftInfo());
     }
 
     @Override

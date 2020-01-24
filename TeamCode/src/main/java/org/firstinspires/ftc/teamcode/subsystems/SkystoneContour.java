@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkystoneContour extends OpenCvPipeline {
+    private Telemetry telemetry;
     private Mat yuv = new Mat();
     private Mat bimImg = new Mat();
     private Mat structElement = new Mat();
@@ -23,6 +25,7 @@ public class SkystoneContour extends OpenCvPipeline {
     public synchronized void setShowContours(boolean b) {
         showContours = b;
     }
+
     public synchronized ArrayList<Double> getContourXPos() {
 //        Moments m = Imgproc.moments(contours.get(contours.size() - 1));
 //        //here, we return the average x position of the contour
@@ -36,6 +39,21 @@ public class SkystoneContour extends OpenCvPipeline {
         return xpos;
     }
 
+
+    public synchronized double getContourXPosTest() {
+//        Moments m = Imgproc.moments(contours.get(contours.size() - 1));
+//        //here, we return the average x position of the contour
+//        return m.m10/m.m00;
+        Moments m;
+//        ArrayList<Double> xpos = new ArrayList<>();
+//        for (MatOfPoint mat : contours) {
+//            m = Imgproc.moments(mat);
+//            xpos.add(m.m10/m.m00);
+//        }
+        m = Imgproc.moments(contours.get(0));
+        return m.m10/m.m00;
+    }
+
     public synchronized ArrayList<Double> getContourYPos() {
 //        Moments m = Imgproc.moments(contours.get(contours.size() - 1));
 //        //here, we return the average y position of the contour
@@ -45,6 +63,7 @@ public class SkystoneContour extends OpenCvPipeline {
         for (MatOfPoint mat : contours) {
             m = Imgproc.moments(mat);
             ypos.add(m.m01/m.m00);
+            telemetry.addLine("Found contour at: " + m.m01/m.m00);
         }
         return ypos;
     }
@@ -53,7 +72,7 @@ public class SkystoneContour extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2YUV, 3);
+        Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2HSV, 3);
         //Create a binary image with the upper and lower bounds of the colors we want.
         Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(20, 20, 20), bimImg);
         //Now, we erode the binary image to get rid of any dirtiness.
