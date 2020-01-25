@@ -31,6 +31,7 @@ public class SkystoneContour extends OpenCvPipeline {
     private boolean showContours, isAccessible = true;
     private boolean found, skystoneIsCentered = false;
     private Moments bruh;
+    private int contoursFound;
     private double mThing;
     private double maximumArea = 9000;
     private double minimumArea = 15000;
@@ -50,7 +51,7 @@ public class SkystoneContour extends OpenCvPipeline {
         isAccessible = false;
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2HSV, 3);
         //Create a binary image with the upper and lower bounds of the colors we want.
-        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(180,255,34), thresholded);
+        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(180,255,43), thresholded);
         //Now, we erode the binary image to get rid of any dirtiness.
         structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         //Eroding the image allows us to better locate the skystone, as the border walls of the playing field are black as well
@@ -58,6 +59,7 @@ public class SkystoneContour extends OpenCvPipeline {
         Imgproc.findContours(thresholded, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         if (contours.size() > 0) {
             if (showContours) Imgproc.drawContours(thresholded, contours, -1, new Scalar(255, 255, 255), 2, 8);
+            contoursFound = contours.size();
             for (int i = 0; i < contours.size() && !found; i++) {
                 tempMat = contours.get(i);
                 Rect boundingRect = Imgproc.boundingRect(tempMat);
@@ -67,23 +69,28 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
+                boolean matAreaInBounds = (matArea > 9000) && (matArea < 38000);
                 if (
-                        x > LOWER_X && x < UPPER_X && y > LOWER_Y && y < UPPER_Y ||
-                        ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X && ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y
-                ) {
+                        x > LOWER_X && x < UPPER_X && y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
+                        ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X && ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds
+                )
+                {
                     found = true;
                 }
-                else found = false;
-
             }
             skystoneIsCentered = found;
         }
-
         return yuv;
     }
 
-    public boolean getSStoneCentered()  {
+    public boolean getStoneCentered()  {
         return skystoneIsCentered;
     }
+
+    public int getContoursFound() {
+        return contoursFound;
+    }
+
+
 
 }
