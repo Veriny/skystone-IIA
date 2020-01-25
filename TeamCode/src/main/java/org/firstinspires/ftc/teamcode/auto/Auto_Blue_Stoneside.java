@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="RED RED RED(Stoneside)_Collect_Deposit_Foundation_Park", group = "test")
-public class Auto_Red_Stoneside extends LinearOpMode {
+@Autonomous(name="BLUE BLUE BLUE(Stoneside)_Collect_Deposit_Foundation_Park", group = "test")
+public class Auto_Blue_Stoneside extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
     public Lift lift;
@@ -39,8 +39,8 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         robot.update();
 //        robot.strafe(24, 0.4); //changed
         robot.drive(24, 0.5);   //added
-        robot.strafe(6, 0.4);
-        robot.turn(-45, 0.5);   //added
+        robot.strafe(-6, 0.4);
+        robot.turn(45, 0.5);   //added
 
         robot.update();
         lift.liftV4BMotorNoSync();
@@ -65,9 +65,9 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         lift.restV4BMotorNoSync();
 
         phoneCam.stopStreaming();
-        robot.turn(-42.5, 0.4); //changed
+        robot.turn(42.5, 0.4); //changed
         robot.drive(-65, 0.75);  //changed
-        robot.turn(-90, 0.5);
+        robot.turn(90, 0.5);
 
         lift.dumpLiftMotorNoSync();
         robot.residentSleeper(750);    //changed
@@ -81,12 +81,12 @@ public class Auto_Red_Stoneside extends LinearOpMode {
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(140, 12, 0.275, true);   //changed
+        robot.arcTurn(-140, 12, 0.275, false);   //changed
         robot.residentSleeper(250); //changed
         foundationClaw.restNoSync();
 
         robot.drive(-22, 0.5);  //changed
-        robot.strafe(-22, 0.6);  //changed
+        robot.strafe(22, 0.6);  //changed
         robot.drive(30, 0.5); //changed
 
 

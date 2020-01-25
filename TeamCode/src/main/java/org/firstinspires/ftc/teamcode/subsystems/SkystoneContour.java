@@ -21,7 +21,8 @@ public class SkystoneContour extends OpenCvPipeline {
     private Telemetry tele;
     private double x, y;
     private List<MatOfPoint> contours = new ArrayList<>();
-    private boolean showContours = true;
+    private boolean showContours, isAccessible = true;
+    private double mThing;
     public synchronized void setShowContours(boolean b) {
         showContours = b;
     }
@@ -34,8 +35,13 @@ public class SkystoneContour extends OpenCvPipeline {
         for (MatOfPoint mat : contours) {
             m = Imgproc.moments(mat);
             xpos.add(m.m10/m.m00);
+            mThing = m.m10/m.m00;
         }
         return xpos;
+    }
+
+    public double getmThing() {
+        return mThing;
     }
 
     public void setTelemetry(Telemetry tele) {
@@ -62,6 +68,9 @@ public class SkystoneContour extends OpenCvPipeline {
     public boolean skystoneIsCentered() {
         boolean xCoordCentered = false;
         boolean yCoordCentered = false;
+         while (!isAccessible) {
+             //do nothing
+         }
         ArrayList<Double> xPositions = getContourXPos();
         ArrayList<Double> yPositions = getContourYPos();
         if(xPositions.size() == 0 || yPositions.size() == 0) {
@@ -82,6 +91,7 @@ public class SkystoneContour extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+         isAccessible = false;
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2HSV, 3);
         //Create a binary image with the upper and lower bounds of the colors we want.
         Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(180,255,34), bimImg);
@@ -93,6 +103,8 @@ public class SkystoneContour extends OpenCvPipeline {
         if (showContours && contours.size() > 0) {
             Imgproc.drawContours(bimImg, contours, -1, new Scalar(0, 255, 0), 2, 8);
         }
+        isAccessible = true;
         return yuv;
     }
+
 }

@@ -14,12 +14,11 @@ public class Lift {
     //this one is the motor that controls the 4-bar
     private DcMotor v4bMotor;
     private Servo clawServo;
-    private int v4bMotorRestPos = 0;
-    private int v4bMotorLiftPos = 150;
-    private int v4bMotorDownPos = -250;
-    private int v4bMotorDumpPos = -400;
+    private int v4bMotorRestPos = 25;
+    private int v4bMotorLiftPos = 300;
+    private int v4bMotorDumpPos = -500;
     private int liftMotorRestPos = 50;
-    private int liftMotorDumpPos = 800;
+    private int liftMotorDumpPos = 1200;
     private DcMotorControllerEx v4bControllerEx;
 
     public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, boolean isAuto) {
@@ -121,17 +120,13 @@ public class Lift {
     public synchronized void liftV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.9);
+        v4bMotor.setPower(0.7);
     }
 
     public synchronized void dumpV4BMotor() {
-        v4bMotor.setTargetPosition(v4bMotorDownPos);
-        v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.4);
-        while(v4bMotor.isBusy());
         v4bMotor.setTargetPosition(v4bMotorDumpPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.9);
+        v4bMotor.setPower(0.6);
     }
 
 
@@ -147,25 +142,25 @@ public class Lift {
     public void dumpLiftMotorNoSync() {
         liftMotor.setTargetPosition(liftMotorDumpPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(0.6);
+        liftMotor.setPower(0.75);
     }
 
     public void restV4BMotorNoSync() {
         v4bMotor.setTargetPosition(v4bMotorRestPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.25);
+        v4bMotor.setPower(0.5);
     }
 
     public void liftV4BMotorNoSync() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.3);
+        v4bMotor.setPower(0.7);
     }
 
     public void dumpV4BMotorNoSync() {
         v4bMotor.setTargetPosition(v4bMotorDumpPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.3);
+        v4bMotor.setPower(0.6);
     }
 
 
