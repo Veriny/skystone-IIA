@@ -30,10 +30,12 @@ public class Auto_Blue_Foundation extends LinearOpMode {
         robot.residentSleeper(1000);
         robot.drive(-1, 0.3);
         robot.residentSleeper(500);
-        robot.arcTurn(-90, 24, 0.3, false);
+        robot.arcTurn(140, 12, 0.275, false);
         foundationClaw.restNoSync();
         robot.residentSleeper(500);
-        robot.drive(-18, 0.4);
-        robot.drive(32, 0.4);
+        robot.drive(-22, 0.4);
+        robot.strafe(8, 0.4);
+        robot.strafe(-2, 0.3);
+        robot.drive(30, 0.4);
     }
 }
