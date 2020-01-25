@@ -91,7 +91,7 @@ public class SkystoneContour extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-         isAccessible = false;
+        isAccessible = false;
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2HSV, 3);
         //Create a binary image with the upper and lower bounds of the colors we want.
         Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(180,255,34), bimImg);
@@ -101,7 +101,7 @@ public class SkystoneContour extends OpenCvPipeline {
         Imgproc.erode(bimImg, bimImg, structElement);
         Imgproc.findContours(bimImg, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         if (showContours && contours.size() > 0) {
-            Imgproc.drawContours(bimImg, contours, -1, new Scalar(0, 255, 0), 2, 8);
+            Imgproc.drawContours(bimImg, contours, -1, new Scalar(255, 255, 255), 2, 8);
         }
         isAccessible = true;
         return yuv;
