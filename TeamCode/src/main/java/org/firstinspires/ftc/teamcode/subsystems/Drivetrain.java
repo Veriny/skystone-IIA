@@ -20,8 +20,8 @@ public class Drivetrain {
     private DcMotor bottomLeft;
     private Telemetry telemetry;
     private SkystoneContour skystoneContour;
-    private PIDCoefficients pidCoefficientDistance;
-    private PIDCoefficients pidCoefficientTurning;
+//    private PIDCoefficients pidCoefficientDistance;
+//    private PIDCoefficients pidCoefficientTurning;
     private ElapsedTime timeX;
 
     private static final int TICKS_PER_ROTATION = 679;
@@ -29,12 +29,12 @@ public class Drivetrain {
     private static final double BOT_DIAMETER = 17.5;
     private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
 
-    private double p_distance = 0.05;
-    private double i_distance = 0.0000004;
-    private double d_distance = 0;
-    private double p_turn = -0.0065;
-    private double i_turn = -0.00001;
-    private double d_turn = 0;
+//    private double p_distance = 0.05;
+//    private double i_distance = 0.0000004;
+//    private double d_distance = 0;
+//    private double p_turn = -0.0065;
+//    private double i_turn = -0.00001;
+//    private double d_turn = 0;
 
 
     public Drivetrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t) {
@@ -59,8 +59,8 @@ public class Drivetrain {
             topLeft.setDirection(DcMotorSimple.Direction.FORWARD);
             bottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
-            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
+//            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
+//            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
         }
     }
     //김정은
@@ -113,23 +113,23 @@ public class Drivetrain {
         topRight.setPower(power);
     }
 
-    public void pidDrive(double distance, double maxPower) {
-        double position = calculateTicks(distance);
-        telemetry.addLine("PID: Moved with position ticks: " + position);
-
-            double error = distance - averageEncoders();
-            double totalError = 0;
-            if ((Math.abs(totalError + error) * i_distance < 1.0) &&
-                    (Math.abs(totalError + error) * i_distance > -1.0))
-                totalError += error;
-        // Perform the primary PID calculation
-        double resultPower = maxPower * (p_distance * error + i_distance * totalError);
-        motorDrive(bottomLeft, position, resultPower);
-        motorDrive(bottomRight, position, resultPower);
-        motorDrive(topLeft, position, resultPower);
-        motorDrive(topRight, position, resultPower);
-        jigglypuff();
-    }
+//    public void pidDrive(double distance, double maxPower) {
+//        double position = calculateTicks(distance);
+//        telemetry.addLine("PID: Moved with position ticks: " + position);
+//
+//            double error = distance - averageEncoders();
+//            double totalError = 0;
+//            if ((Math.abs(totalError + error) * i_distance < 1.0) &&
+//                    (Math.abs(totalError + error) * i_distance > -1.0))
+//                totalError += error;
+//        // Perform the primary PID calculation
+//        double resultPower = maxPower * (p_distance * error + i_distance * totalError);
+//        motorDrive(bottomLeft, position, resultPower);
+//        motorDrive(bottomRight, position, resultPower);
+//        motorDrive(topLeft, position, resultPower);
+//        motorDrive(topRight, position, resultPower);
+//        jigglypuff();
+//    }
 
 //    public boolean skystoneIsCentered() {
 //        boolean xCoordCentered = false;
@@ -177,8 +177,8 @@ public class Drivetrain {
     }
 
     public void arcTurn(double degrees, int radius, double power, boolean leftSideOuter) {
-        double distanceOuter = degrees / 360 / 2.2 * (2 * Math.PI) * (BOT_DIAMETER + radius);
-        double distanceInner = degrees / 360 / 2.2 * (2 * Math.PI) * radius;
+        double distanceOuter = calculateTicks(degrees / 360 * (2 * Math.PI) * (BOT_DIAMETER + radius));
+        double distanceInner = calculateTicks(degrees / 360 * (2 * Math.PI) * radius);
         double powerOuter = power;
         double powerInner = power * distanceInner / distanceOuter;
         if(leftSideOuter) {
@@ -186,14 +186,15 @@ public class Drivetrain {
             motorDrive(bottomRight, distanceInner, powerInner);
             motorDrive(topLeft, distanceOuter, powerOuter);
             motorDrive(topRight, distanceInner, powerInner);
+            jigglypuff();
         }
         else {
             motorDrive(bottomLeft, distanceInner, powerInner);
             motorDrive(bottomRight, distanceOuter, powerOuter);
             motorDrive(topLeft, distanceInner, powerInner);
             motorDrive(topRight, distanceOuter, powerOuter);
+            jigglypuff();
         }
-        jigglypuff();
     }
 
     public void REEEEEEE() {

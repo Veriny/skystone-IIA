@@ -84,9 +84,9 @@ public class Auto_Blue_Buildside_Vision extends LinearOpMode {
         foundationClaw.pushNoSync();
         robot.residentSleeper(500);
         lift.restV4BMotorNoSync();
-        robot.residentSleeper(1500);
+        robot.residentSleeper(1000);
         lift.restLiftMotorNoSync();
-        robot.residentSleeper(750);
+        robot.residentSleeper(500);
         robot.arcTurn(-90, 24, 0.3, false);
         robot.residentSleeper(500);
         foundationClaw.restNoSync();
