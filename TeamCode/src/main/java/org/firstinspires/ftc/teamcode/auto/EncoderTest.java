@@ -13,30 +13,23 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="Blue Foundation Park", group = "test")
-public class Auto_Blue_Foundation extends LinearOpMode {
+@Autonomous(name="Encoder Test", group = "test")
+public class EncoderTest extends LinearOpMode {
     public Drivetrain robot;
+    public Intake intake;
+    public Lift lift;
     public FoundationClaw foundationClaw;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new Drivetrain(hardwareMap.dcMotor.get("topLeftMotor"), hardwareMap.dcMotor.get("bottomLeftMotor"), hardwareMap.dcMotor.get("topRightMotor"), hardwareMap.dcMotor.get("bottomRightMotor"), true, telemetry);
+        intake = new Intake(hardwareMap.dcMotor.get("leftIntake"), hardwareMap.dcMotor.get("rightIntake"));
+        lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), true);
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
 
         waitForStart();
-        robot.drive(-1, 0.4);
-        robot.strafe(8, 0.5);
-        robot.drive(-31, 0.4);
-        foundationClaw.pushNoSync();
-        robot.residentSleeper(1000);
-        robot.drive(-1, 0.3);
-        robot.residentSleeper(500);
-        robot.arcTurn(135, 12, 0.275, false);
-        foundationClaw.restNoSync();
-        robot.residentSleeper(500);
-        robot.drive(-22, 0.4);
-        robot.strafe(-19, 0.4);
-        robot.drive(30, 0.4);
+        robot.drive(1, 0.5);
+        lift.testLiftMotorNoSync();
+        lift.liftV4BMotor();
     }
 }

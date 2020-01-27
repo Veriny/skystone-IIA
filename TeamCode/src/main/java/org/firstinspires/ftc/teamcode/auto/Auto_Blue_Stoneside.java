@@ -47,33 +47,35 @@ public class Auto_Blue_Stoneside extends LinearOpMode {
 
         //here's where you add vision
         intake.succNoSync(0.69420 * 1.1);
-        robot.drive(27, 0.5);  //changed
+        robot.drive(27, 0.3);  //changed
         intake.noSuccNoSync();
-        robot.residentSleeper(100);
+        robot.residentSleeper(200);
         intake.dontsuccNoSync(0.5);
-        robot.residentSleeper(100);
+        robot.residentSleeper(500);
         intake.noSuccNoSync();
-        robot.drive(-1, 0.4);
-        robot.drive(6, 1.0);
+        robot.drive(-2, 0.4);
+        robot.drive(4, 0.9);
+        robot.strafe(4, 0.4);
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
         lift.holdNoSync();
-        robot.drive(-38, 0.8);
+        robot.drive(-35, 0.8);
+        robot.strafe(-8, 0.4);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(200);
         lift.restV4BMotorNoSync();
 
         phoneCam.stopStreaming();
-        robot.turn(42.5, 0.4); //changed
-        robot.drive(-65, 0.75);  //changed
+        robot.turn(45, 0.4); //changed
+        robot.drive(-57, 0.75);  //changed
         robot.turn(90, 0.5);
 
         lift.dumpLiftMotorNoSync();
         robot.residentSleeper(750);    //changed
         lift.dumpV4BMotorNoSync();
         robot.residentSleeper(500);    //changed
-        robot.drive(-16, 0.4); //changed
+        robot.drive(-13, 0.4); //changed
         lift.releaseNoSync();
         foundationClaw.pushNoSync();
         robot.residentSleeper(500);
@@ -81,12 +83,12 @@ public class Auto_Blue_Stoneside extends LinearOpMode {
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(-140, 12, 0.275, false);   //changed
+        robot.arcTurn(135, 12, 0.275, false);   //changed
         robot.residentSleeper(250); //changed
         foundationClaw.restNoSync();
 
         robot.drive(-22, 0.5);  //changed
-        robot.strafe(22, 0.6);  //changed
+        robot.strafe(-19, 0.6);  //changed
         robot.drive(30, 0.5); //changed
 
 

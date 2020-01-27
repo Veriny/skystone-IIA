@@ -15,7 +15,8 @@ public class Lift {
     private DcMotor v4bMotor;
     private Servo clawServo;
     private int v4bMotorRestPos = 25;
-    private int v4bMotorLiftPos = 300;
+    private int v4bMotorLiftPos = 325;
+    private int v4bMotorLastResort = -400;
     private int v4bMotorDumpPos = -500;
     private int liftMotorRestPos = 50;
     private int liftMotorDumpPos = 1200;
@@ -56,10 +57,10 @@ public class Lift {
 
     public void controls(Gamepad gp) {
 
-        if(Math.abs(gp.left_stick_y) > 0.05) {
+        if(Math.abs(gp.right_stick_y) > 0.05) {
             //slows down the falling down of lift during teleOP
-            if(gp.left_stick_y < 0) {
-                runLiftMotor(-gp.left_stick_y);
+            if(gp.right_stick_y < 0) {
+                runLiftMotor(-gp.right_stick_y);
             }
             else {
                 //checks if lift goes below 0
@@ -67,7 +68,7 @@ public class Lift {
                     holdLiftMotor();
                 }
                 else {
-                    runLiftMotor(-gp.left_stick_y / 4);
+                    runLiftMotor(-gp.right_stick_y / 4);
                 }
             }
         }
@@ -91,6 +92,9 @@ public class Lift {
         }
         else if(gp.y) {
             dumpV4BMotor();
+        }
+        else if(gp.x) {
+            lastResortV4BMotor();
         }
     }
 
@@ -129,6 +133,12 @@ public class Lift {
         v4bMotor.setPower(0.6);
     }
 
+    public synchronized void lastResortV4BMotor() {
+        v4bMotor.setTargetPosition(v4bMotorLastResort);
+        v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        v4bMotor.setPower(0.6);
+    }
+
 
 
 
@@ -137,6 +147,12 @@ public class Lift {
         liftMotor.setTargetPosition(liftMotorRestPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(0.25);
+    }
+
+    public void testLiftMotorNoSync() {
+        liftMotor.setTargetPosition(100);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setPower(0.5);
     }
 
     public void dumpLiftMotorNoSync() {
@@ -154,7 +170,7 @@ public class Lift {
     public void liftV4BMotorNoSync() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.7);
+        v4bMotor.setPower(0.75);
     }
 
     public void dumpV4BMotorNoSync() {

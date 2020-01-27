@@ -25,17 +25,18 @@ public class Auto_Red_Foundation extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
 
         waitForStart();
-        robot.drive(-32, 0.4);
+        robot.drive(-1, 0.4);
+        robot.strafe(-8, 0.5);
+        robot.drive(-31, 0.4);
         foundationClaw.pushNoSync();
         robot.residentSleeper(1000);
         robot.drive(-1, 0.3);
         robot.residentSleeper(500);
-        robot.arcTurn(140, 12, 0.275, true);
+        robot.arcTurn(135, 12, 0.275, true);
         foundationClaw.restNoSync();
         robot.residentSleeper(500);
         robot.drive(-22, 0.4);
-        robot.strafe(-8, 0.4);
-        robot.strafe(2, 0.3);
+        robot.strafe(19, 0.4);
         robot.drive(30, 0.4);
     }
 }
