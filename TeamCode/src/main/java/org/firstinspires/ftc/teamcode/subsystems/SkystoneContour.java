@@ -49,16 +49,19 @@ public class SkystoneContour extends OpenCvPipeline {
     @Override
     public Mat processFrame(Mat input) {
         isAccessible = false;
-        Imgproc.cvtColor(input, yuv, Imgproc.COLOR_RGB2HSV, 3);
+        showContours = true;
+        yuv = input.clone();
+        Imgproc.cvtColor(input, yuv, Imgproc.COLOR_BGR2HSV);
         //Create a binary image with the upper and lower bounds of the colors we want.
-        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(180,255,43), thresholded);
+        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(255,255,90), thresholded);
         //Now, we erode the binary image to get rid of any dirtiness.
-        structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
+//        structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         //Eroding the image allows us to better locate the skystone, as the border walls of the playing field are black as well
         Imgproc.erode(thresholded, thresholded, structElement);
         Imgproc.findContours(thresholded, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         if (contours.size() > 0) {
-            if (showContours) Imgproc.drawContours(thresholded, contours, -1, new Scalar(255, 255, 255), 2, 8);
+            if (showContours)
+                Imgproc.drawContours(thresholded, contours, -1, new Scalar(0, 0, 0), 2, 8);
             contoursFound = contours.size();
             for (int i = 0; i < contours.size() && !found; i++) {
                 tempMat = contours.get(i);
@@ -78,9 +81,10 @@ public class SkystoneContour extends OpenCvPipeline {
                     found = true;
                 }
             }
+            contours.clear();
             skystoneIsCentered = found;
         }
-        return yuv;
+        return thresholded;
     }
 
     public boolean getStoneCentered()  {

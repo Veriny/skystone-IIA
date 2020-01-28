@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.auto.VisionTestOP;
@@ -28,6 +29,9 @@ public class Drivetrain {
     private static final int WHEEL_DIAMETER = 4;
     private static final double BOT_DIAMETER = 17.5;
     private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
+    private ElapsedTime mRunTime;
+
+    private double kP, kI, kD;
 
 //    private double p_distance = 0.05;
 //    private double i_distance = 0.0000004;
@@ -58,6 +62,10 @@ public class Drivetrain {
             bottomRight.setDirection(DcMotorSimple.Direction.REVERSE);
             topLeft.setDirection(DcMotorSimple.Direction.FORWARD);
             bottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+
+            kP = 1.0;
+            kI = 1.0;
+            kD = 1.0;
 
 //            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
 //            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
@@ -204,6 +212,61 @@ public class Drivetrain {
         bottomLeft.setPower(1);
     }
 
+    public void seperateMotorPowerDrive(double TR, double BR, double TL, double BL) {
+        topLeft.setPower(TL);
+        topRight.setPower(TL);
+        bottomLeft.setPower(BL);
+        bottomLeft.setPower(BR);
+    }
+
+    public void driveForwardWithPID(double position) {
+        //make sure to tune the PID to what we want it to be (kP, kI, kD values)
+        double rotations = position / (WHEEL_DIAMETER * Math.PI);
+        double ticks = rotations * TICKS_PER_ROTATION;
+        mRunTime = new ElapsedTime();
+        double[] power = {1, 1, 1, 1};
+        double[] error = {rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION};
+        double prevErrorTR, prevErrorTL, prevErrorBL, prevErrorBR;
+        prevErrorTR = 0;
+        prevErrorTL = 0;
+        prevErrorBL = 0;
+        prevErrorBR = 0;
+        double[] integralError = {rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION};
+        double[] derivativeError = {rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION, rotations * TICKS_PER_ROTATION};
+        double prevTime = 0;
+        mRunTime.reset();
+        while (Math.abs(topRight.getCurrentPosition()) != Math.abs(ticks) || Math.abs(topLeft.getCurrentPosition()) != Math.abs(ticks) ||
+                                    Math.abs(bottomLeft.getCurrentPosition()) != Math.abs(ticks) || Math.abs(bottomRight.getCurrentPosition()) != Math.abs(ticks)) {
+            //The error array will store the errors as TR, BR, TL, BL respectively
+            error[0] = ticks - topRight.getCurrentPosition();
+            error[1] = ticks - bottomRight.getCurrentPosition();
+            error[2] = ticks - topLeft.getCurrentPosition();
+            error[3] = ticks - bottomLeft.getCurrentPosition();
+
+            derivativeError[0] = (error[0] - prevErrorTR) / mRunTime.seconds() - prevTime;
+            derivativeError[1] = (error[1] - prevErrorBR) / mRunTime.seconds() - prevTime;
+            derivativeError[2] = (error[2] - prevErrorTL) / mRunTime.seconds() - prevTime;
+            derivativeError[3] = (error[3] - prevErrorBL) / mRunTime.seconds() - prevTime;
+
+            integralError[0] += error[0]*(mRunTime.seconds() - prevTime);
+            integralError[1] += error[1]*(mRunTime.seconds() - prevTime);
+            integralError[2] += error[2]*(mRunTime.seconds() - prevTime);
+            integralError[3] += error[3]*(mRunTime.seconds() - prevTime);
+
+            for (int i = 0; i < power.length; i++) {
+                power[i] = Range.clip(kP * error[i] + kI * integralError[i] + kD * derivativeError[i], 1, -1);
+            }
+            seperateMotorPowerDrive(power[0], power[1], power[2], power[3]);
+            prevTime = mRunTime.seconds();
+            prevErrorTR = error[0];
+            prevErrorBR = error[1];
+            prevErrorTL = error[2];
+            prevErrorBL = error[3];
+        }
+        mRunTime.reset();
+        resetEncoders();
+    }
+
     public double inchesMoved() {
         int ticks = averageEncoders();
         double inches = calculateInches(ticks);
@@ -277,6 +340,4 @@ public class Drivetrain {
             continue;
         }
     }
-
-
 }
