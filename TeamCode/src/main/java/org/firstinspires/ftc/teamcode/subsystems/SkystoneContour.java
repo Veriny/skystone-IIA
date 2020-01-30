@@ -22,9 +22,16 @@ public class SkystoneContour extends OpenCvPipeline {
     private MatOfPoint tempMat;
     private Telemetry tele;
     private double x, y, ADJUSTED_X, ADJUSTED_Y;
+    private boolean pos1, pos2, pos3;
     //Important
-    private double UPPER_X = 380;
-    private double LOWER_X = 130;
+    //private double UPPER_X = 380;
+    //private double LOWER_X = 130;
+    private double pos1Left_X;
+    private double pos1Right_X;
+    private double pos2Left_X;
+    private double pos2Right_X;
+    private double pos3Left_X;
+    private double pos3Right_X;
     private double UPPER_Y = 380;
     private double LOWER_Y = 130;
     private List<MatOfPoint> contours = new ArrayList<>();
@@ -74,9 +81,11 @@ public class SkystoneContour extends OpenCvPipeline {
                 double matArea = Imgproc.contourArea(tempMat);
                 boolean matAreaInBounds = (matArea > 9000) && (matArea < 38000);
                 if (
-                        x > LOWER_X && x < UPPER_X && y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
-                        ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X && ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds
-                )
+                        //x > LOWER_X && x < UPPER_X &&
+                        y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
+                        //ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X &&
+                        ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds)
+                        //TODO: if(x > pos1
                 {
                     found = true;
                 }
