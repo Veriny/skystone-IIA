@@ -29,7 +29,6 @@ public class VisionTestOP extends LinearOpMode {
         waitForStart();
         vision = new SkystoneContour();
         vision.setShowContours(true);
-        vision.setTelemetry(telemetry);
         phoneCam.setPipeline(vision);
         phoneCam.openCameraDevice();
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
@@ -44,8 +43,8 @@ public class VisionTestOP extends LinearOpMode {
             telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
             telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
-            telemetry.addData("Contour count", vision.getContourFoundCount());
-            telemetry.addData("M Thing", vision.getmThing());
+            telemetry.addData("skystone centered?", vision.getStoneCentered());
+            telemetry.addData("contourCount", vision.getContoursFound());
             telemetry.update();
         }
     }
