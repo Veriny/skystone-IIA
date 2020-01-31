@@ -23,6 +23,7 @@ public class SkystoneContour extends OpenCvPipeline {
     private Telemetry tele;
     private double x, y, ADJUSTED_X, ADJUSTED_Y;
     private boolean pos1, pos2, pos3;
+    private boolean found1, found2, found3;
     //Important
     //private double UPPER_X = 380;
     //private double LOWER_X = 130;
@@ -79,34 +80,37 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
-                boolean matAreaInBounds = (matArea > 9000) && (matArea < 38000);
+                boolean matAreaInBounds = (matArea > 9000) && (matArea < 28000);
 
-                //TODO: START OF KEVIN'S :( CODE
-                if (
-                        //x > LOWER_X && x < UPPER_X &&
+                if (//x > LOWER_X && x < UPPER_X &&
                         y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
                         //ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X &&
                         ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds)
-                        if(x > pos1Left_X && x < pos1Right_X ||
-                            ADJUSTED_X > pos1Left_X && ADJUSTED_X < pos1Right_X)
-                        {
-                            pos1 = true;
-                        }
 
-                        else if(x > pos2Left_X && x < pos2Right_X ||
-                            ADJUSTED_X > pos2Left_X && ADJUSTED_X < pos2Right_X)
-                        {
-                            pos2 = true;
-                        }
-                        else {
-                            pos3 = true;
-                        }
                 {
                     found = true;
+                    if(x > pos1Left_X && x < pos1Right_X ||
+                            ADJUSTED_X > pos1Left_X && ADJUSTED_X < pos1Right_X)
+                    {
+                        pos1 = true;
+                    }
+
+                    else if(x > pos2Left_X && x < pos2Right_X ||
+                            ADJUSTED_X > pos2Left_X && ADJUSTED_X < pos2Right_X)
+                    {
+                        pos2 = true;
+                    }
+                    else {
+                        pos3 = true;
+                    }
                 }
+
             }
             contours.clear();
             skystoneIsCentered = found;
+            found1 = pos1;
+            found2 = pos2;
+            found3 = pos3;
         }
         return thresholded;
     }
@@ -134,5 +138,15 @@ public class SkystoneContour extends OpenCvPipeline {
     }
 
 
+    public boolean isFound1() {
+        return found1;
+    }
 
+    public boolean isFound2() {
+        return found2;
+    }
+
+    public boolean isFound3() {
+        return found3;
+    }
 }
