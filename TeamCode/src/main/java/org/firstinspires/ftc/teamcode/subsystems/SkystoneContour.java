@@ -26,12 +26,12 @@ public class SkystoneContour extends OpenCvPipeline {
     //Important
     //private double UPPER_X = 380;
     //private double LOWER_X = 130;
-    private double pos1Left_X;
-    private double pos1Right_X;
-    private double pos2Left_X;
-    private double pos2Right_X;
-    private double pos3Left_X;
-    private double pos3Right_X;
+    private double pos1Left_X = 20;
+    private double pos1Right_X = 120;
+    private double pos2Left_X = 120;
+    private double pos2Right_X = 220;
+    private double pos3Left_X = 220;
+    private double pos3Right_X = 320;
     private double UPPER_Y = 380;
     private double LOWER_Y = 130;
     private List<MatOfPoint> contours = new ArrayList<>();
@@ -80,12 +80,27 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
                 boolean matAreaInBounds = (matArea > 9000) && (matArea < 38000);
+
+                //TODO: START OF KEVIN'S :( CODE
                 if (
                         //x > LOWER_X && x < UPPER_X &&
                         y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
                         //ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X &&
                         ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds)
-                        //TODO: if(x > pos1
+                        if(x > pos1Left_X && x < pos1Right_X ||
+                            ADJUSTED_X > pos1Left_X && ADJUSTED_X < pos1Right_X)
+                        {
+                            pos1 = true;
+                        }
+
+                        else if(x > pos2Left_X && x < pos2Right_X ||
+                            ADJUSTED_X > pos2Left_X && ADJUSTED_X < pos2Right_X)
+                        {
+                            pos2 = true;
+                        }
+                        else {
+                            pos3 = true;
+                        }
                 {
                     found = true;
                 }
@@ -95,6 +110,20 @@ public class SkystoneContour extends OpenCvPipeline {
         }
         return thresholded;
     }
+
+    public int getSkystonePosition() {
+        if(pos1 = true) {
+            return 1;
+        }
+        else if(pos2 = true) {
+            return 2;
+        }
+        else if(pos3 = true) {
+            return 3;
+        }
+        else { return 0; }
+    }
+    //TODO: END OF KEVIN'S :( CODE
 
     public boolean getStoneCentered()  {
         return skystoneIsCentered;
