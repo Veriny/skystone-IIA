@@ -38,14 +38,19 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(24, 0.5);   //added
-        robot.strafe(6, 0.4);
-        robot.turn(-45, 0.5);   //added
+        robot.drive(22, 0.5);   //added
+        robot.turn(-90, 0.5);   //added
 
         robot.update();
         lift.liftV4BMotorNoSync();
 
         //here's where you add vision
+        while(!vision.getStoneCentered() && robot.inchesMoved() < 18) {
+            robot.driveNoDist(0.3);
+        }
+        double inchesMoved = robot.inchesMoved();
+        robot.drive(-3, 0.5);
+        robot.turn(45, 0.4);
         intake.succNoSync(0.69420 * 1.1);
         robot.drive(27, 0.3);  //changed
         intake.noSuccNoSync();
@@ -60,7 +65,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
         lift.holdNoSync();
-        robot.drive(-35, 0.8);
+        robot.drive(-30, 0.8);
         robot.strafe(8, 0.4);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(200);
@@ -68,7 +73,8 @@ public class Auto_Red_Vision extends LinearOpMode {
 
         phoneCam.stopStreaming();
         robot.turn(-45, 0.4); //changed
-        robot.drive(-57, 0.75);  //changed
+        robot.drive(inchesMoved, 0.6);
+        robot.drive(-48, 0.75);  //changed
         robot.turn(-90, 0.5);
 
         lift.dumpLiftMotorNoSync();
@@ -83,7 +89,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(135, 12, 0.275, true);   //changed
+        robot.arcTurn(135, 12, 0.35, true);   //changed
         robot.residentSleeper(250); //changed
         foundationClaw.restNoSync();
 
