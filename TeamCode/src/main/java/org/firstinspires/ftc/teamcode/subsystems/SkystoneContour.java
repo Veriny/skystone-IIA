@@ -55,7 +55,7 @@ public class SkystoneContour extends OpenCvPipeline {
         //Create a binary image with the upper and lower bounds of the colors we want.
         Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(255,255,90), thresholded);
         //Now, we erode the binary image to get rid of any dirtiness.
-//        structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
+        structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         //Eroding the image allows us to better locate the skystone, as the border walls of the playing field are black as well
         Imgproc.erode(thresholded, thresholded, structElement);
         Imgproc.findContours(thresholded, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -72,13 +72,16 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
-                boolean matAreaInBounds = (matArea > 9000) && (matArea < 38000);
+                boolean matAreaInBounds = (matArea > 9000) && (matArea < 28000);
                 if (
                         x > LOWER_X && x < UPPER_X && y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
                         ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X && ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds
                 )
                 {
                     found = true;
+                }
+                else {
+                    found = false;
                 }
             }
             contours.clear();
