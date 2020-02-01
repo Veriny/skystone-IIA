@@ -17,7 +17,7 @@ public class Lift {
     private int v4bMotorRestPos = 25;
     private int v4bMotorLiftPos = 325;
     private int v4bMotorLastResort = -400;
-    private int v4bMotorDumpPos = -500;
+    private int v4bMotorDumpPos = -525;
     private int liftMotorRestPos = 50;
     private int liftMotorDumpPos = 1200;
     private DcMotorControllerEx v4bControllerEx;
@@ -130,7 +130,7 @@ public class Lift {
     public synchronized void dumpV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorDumpPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.6);
+        v4bMotor.setPower(0.9);
     }
 
     public synchronized void lastResortV4BMotor() {

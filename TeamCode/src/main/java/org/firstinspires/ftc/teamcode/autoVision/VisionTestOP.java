@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.autoVision;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -11,7 +11,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name = "pepega", group = "pepehands")
+@Autonomous(name = "pepegaVision", group = "pepehands")
 public class VisionTestOP extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
@@ -31,7 +31,7 @@ public class VisionTestOP extends LinearOpMode {
         vision.setShowContours(true);
         phoneCam.setPipeline(vision);
         phoneCam.openCameraDevice();
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
         waitForStart();
 //        while (!vision.skystoneIsCentered()) {
 //            intake.succ(1);
@@ -43,8 +43,12 @@ public class VisionTestOP extends LinearOpMode {
             telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
             telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
-            telemetry.addData("skystone centered?", vision.getStoneCentered());
             telemetry.addData("contourCount", vision.getContoursFound());
+            telemetry.addData("Skystone found", vision.getStoneCentered());
+            telemetry.addData("Width", vision.getWidth());
+            telemetry.addData("Height", vision.getHeight());
+            telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
+            telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
             telemetry.update();
         }
     }
