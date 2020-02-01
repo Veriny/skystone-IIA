@@ -61,6 +61,7 @@ public class SkystoneContour extends OpenCvPipeline {
         width = input.width();
         height = input.height();
         isAccessible = false;
+
         showContours = true;
         yuv = input.clone();
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_BGR2HSV);
