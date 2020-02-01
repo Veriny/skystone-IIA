@@ -30,66 +30,99 @@ public class Auto_Blue_Vision extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        vision = new SkystoneContour();
 
         waitForStart();
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(24, 0.5);   //added
-        robot.strafe(-6, 0.4);
-        robot.turn(45, 0.5);   //added
+        robot.drive(30, 0.6);   //added
+        robot.turn(-110, 0.5);   //added
 
         robot.update();
         lift.liftV4BMotorNoSync();
 
         //here's where you add vision
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        robot.residentSleeper(200);
+        vision.setSkystoneFalse();
+        boolean foundSkystone = false;
+        int count = 0;
+        for(int i = 0; i < 2; i++) {
+            if (!vision.getStoneCentered()) {
+                robot.drive(-8, 0.5);
+//                vision.setSkystoneFalse();
+//                robot.residentSleeper(250);
+                telemetry.addLine("Entered loop");
+                count += 8;
+            }
+            else {
+                foundSkystone = true;
+                telemetry.addLine("Found Skystone");
+                break;
+            }
+        }
+        robot.residentSleeper(250);
+        if(vision.getStoneCentered()) {
+            foundSkystone = true;
+        }
+
+        if(foundSkystone) {
+            robot.drive(-14, 0.5);
+        }
+        else {
+            robot.drive(-6, 0.5);
+            count += 8;
+        }
+        robot.turn(60, 0.4);
         intake.succNoSync(0.69420);
-        robot.drive(27, 0.3);  //changed
+        robot.drive(24, 0.45);  //changed
         intake.noSuccNoSync();
         robot.residentSleeper(200);
         intake.dontsuccNoSync(0.5);
         robot.residentSleeper(500);
         intake.noSuccNoSync();
-        robot.drive(-2, 0.4);
-        robot.drive(4, 0.9);
-        robot.strafe(4, 0.4);
+        robot.strafe(6, 0.5);
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
         lift.holdNoSync();
-        robot.drive(-35, 0.8);
-        robot.strafe(-8, 0.4);
+        robot.drive(-27, 0.8);
+        //robot.strafe(8, 0.4);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(200);
         lift.restV4BMotorNoSync();
 
         phoneCam.stopStreaming();
-        robot.turn(45, 0.4); //changed
-        robot.drive(-57, 0.75);  //changed
-        robot.turn(90, 0.5);
+        robot.turn(-58, 0.4); //changed
+        robot.drive(72  + count, 0.8);  //changed
+        robot.turn(-110, 0.5);
 
+        lift.liftV4BMotorNoSync();
+        robot.residentSleeper(400);
         lift.dumpLiftMotorNoSync();
-        robot.residentSleeper(750);    //changed
+        robot.residentSleeper(1000);    //changed
         lift.dumpV4BMotorNoSync();
-        robot.residentSleeper(500);    //changed
-        robot.drive(-13, 0.4); //changed
+        robot.residentSleeper(250);    //changed
+        robot.drive(-16, 0.4); //changed
+        lift.dropLiftMotorNoSync();
+        robot.residentSleeper(1000);
         lift.releaseNoSync();
+        lift.dumpLiftMotorNoSync();
         foundationClaw.pushNoSync();
         robot.residentSleeper(500);
         lift.restV4BMotorNoSync();
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(135, 12, 0.275, false);   //changed
-        robot.residentSleeper(250); //changed
+        robot.arcTurn(150, 11, 0.65, false);   //changed
         foundationClaw.restNoSync();
 
-        robot.drive(-22, 0.5);  //changed
-        robot.strafe(-19, 0.6);  //changed
-        robot.drive(30, 0.5); //changed
+        robot.drive(-20, 0.7);  //changed
+        robot.strafe(-20, 0.6);  //changed
+        robot.drive(28, 0.6); //changed
 
 
 

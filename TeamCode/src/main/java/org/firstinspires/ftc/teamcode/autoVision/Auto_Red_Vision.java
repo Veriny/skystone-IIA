@@ -38,7 +38,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(29.5, 0.6);   //added
+        robot.drive(30, 0.6);   //added
         robot.turn(-110, 0.5);   //added
 
         robot.update();
