@@ -23,7 +23,7 @@ public class Drivetrain {
     private static final double BOT_DIAMETER = 17.5;
     private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
     private ElapsedTime mRunTime;
-
+    private PIDcontroller tR, tL, bR, bL;
     private double kP, kI, kD;
 
 //    private double p_distance = 0.05;
@@ -79,6 +79,26 @@ public class Drivetrain {
         topLeft.setPower(((-x)+(-y)+(-z)));
         bottomRight.setPower(((x)+(y)+(-z)));
         topRight.setPower(((x)+(-y)+(-z)));
+    }
+
+    public void improvedPIDdrive(double position) {
+        double rotations = position / (WHEEL_DIAMETER * Math.PI);
+        int ticks = (int) rotations * TICKS_PER_ROTATION;
+        mRunTime = new ElapsedTime();
+        tL = new PIDcontroller(1.0, 1.0, 1.0);
+        tR = new PIDcontroller(1.0, 1.0, 1.0);
+        bL = new PIDcontroller(1.0, 1.0, 1.0);
+        bR = new PIDcontroller(1.0, 1.0, 1.0);
+        resetEncoders();
+        mRunTime.reset();
+        while (Math.abs(topRight.getCurrentPosition()) != Math.abs(ticks) || Math.abs(topLeft.getCurrentPosition()) != Math.abs(ticks) ||
+                Math.abs(bottomLeft.getCurrentPosition()) != Math.abs(ticks) || Math.abs(bottomRight.getCurrentPosition()) != Math.abs(ticks)) {
+            topRight.setPower(tR.getPower(ticks, topRight.getCurrentPosition(), mRunTime.seconds()));
+            topLeft.setPower(tL.getPower(ticks, topLeft.getCurrentPosition(), mRunTime.seconds()));
+            bottomRight.setPower(bR.getPower(ticks, bottomRight.getCurrentPosition(), mRunTime.seconds()));
+            bottomLeft.setPower(bL.getPower(ticks, bottomLeft.getCurrentPosition(), mRunTime.seconds()));
+        }
+        resetEncoders();
     }
 
 
