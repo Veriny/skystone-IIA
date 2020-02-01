@@ -8,8 +8,8 @@ public class FoundationClaw {
     private Servo servoB;
 
     //servos in same orientation I think
-    private final double pushPositionA = 0.85;
-    private final double pushPositionB = 0.15;
+    private final double pushPositionA = 0.8;
+    private final double pushPositionB = 0.2;
     private final double restPositionA = 0.0;
     private final double restPositionB = 1.0;
     public FoundationClaw(Servo a, Servo b) {
