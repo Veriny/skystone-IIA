@@ -18,7 +18,7 @@ public class Drivetrain {
 //    private PIDCoefficients pidCoefficientTurning;
     private ElapsedTime timeX;
 
-    private static final int TICKS_PER_ROTATION = 679;
+    private static final int TICKS_PER_ROTATION = 679 * (4/3);
     private static final int WHEEL_DIAMETER = 4;
     private static final double BOT_DIAMETER = 17.5;
     private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;

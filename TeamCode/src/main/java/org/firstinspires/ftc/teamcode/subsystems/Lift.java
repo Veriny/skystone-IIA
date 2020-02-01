@@ -16,9 +16,10 @@ public class Lift {
     private Servo clawServo;
     private int v4bMotorRestPos = 25;
     private int v4bMotorLiftPos = 325;
-    private int v4bMotorLastResort = -400;
+    private int v4bMotorLastResort = -850;
     private int v4bMotorDumpPos = -525;
     private int liftMotorRestPos = 50;
+    private int liftMotorDropPos = 300;
     private int liftMotorDumpPos = 1200;
     private DcMotorControllerEx v4bControllerEx;
 
@@ -130,13 +131,13 @@ public class Lift {
     public synchronized void dumpV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorDumpPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.9);
+        v4bMotor.setPower(0.85);
     }
 
     public synchronized void lastResortV4BMotor() {
         v4bMotor.setTargetPosition(v4bMotorLastResort);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.6);
+        v4bMotor.setPower(0.95);
     }
 
 
@@ -151,6 +152,12 @@ public class Lift {
 
     public void testLiftMotorNoSync() {
         liftMotor.setTargetPosition(100);
+        liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor.setPower(0.5);
+    }
+
+    public void dropLiftMotorNoSync() {
+        liftMotor.setTargetPosition(liftMotorDropPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor.setPower(0.5);
     }
@@ -170,7 +177,7 @@ public class Lift {
     public void liftV4BMotorNoSync() {
         v4bMotor.setTargetPosition(v4bMotorLiftPos);
         v4bMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        v4bMotor.setPower(0.75);
+        v4bMotor.setPower(0.7);
     }
 
     public void dumpV4BMotorNoSync() {

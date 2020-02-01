@@ -46,7 +46,7 @@ public class Auto_Blue_Vision extends LinearOpMode {
         lift.liftV4BMotorNoSync();
 
         //here's where you add vision
-        intake.succNoSync(0.69420 * 1.1);
+        intake.succNoSync(0.69420);
         robot.drive(27, 0.3);  //changed
         intake.noSuccNoSync();
         robot.residentSleeper(200);
