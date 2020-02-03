@@ -188,7 +188,7 @@ public class Lift {
 
 
     public void holdNoSync() {
-        clawServo.setPosition(0.42);
+        clawServo.setPosition(0.45);
     }
 
     public void releaseNoSync() {

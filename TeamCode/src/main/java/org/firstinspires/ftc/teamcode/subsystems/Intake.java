@@ -21,12 +21,12 @@ public class Intake {
     }
 
     public synchronized void succ(double power) {
-        left.setPower(power * 1.03);
+        left.setPower(power);
         right.setPower(-power);
     }
 
     public synchronized void dontsucc(double power) {
-        left.setPower(-power * 1.03);
+        left.setPower(-power);
         right.setPower(power);
     }
 
@@ -44,12 +44,12 @@ public class Intake {
 
 
     public void succNoSync(double power) {
-        left.setPower(power * 1.03);
+        left.setPower(power);
         right.setPower(-power);
     }
 
     public void dontsuccNoSync(double power) {
-        left.setPower(-power * 1.03);
+        left.setPower(-power);
         right.setPower(power);
     }
 
