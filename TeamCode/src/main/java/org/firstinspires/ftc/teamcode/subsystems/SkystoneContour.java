@@ -27,21 +27,27 @@ public class SkystoneContour extends OpenCvPipeline {
     private int width, height;
     private double skystoneXPos, skystoneYPos;
     //Important
-//    private double UPPER_X = 180;
-//    private double LOWER_X = 80;
-    private double pos1Left_X = 0;
-    private double pos1Right_X = 120;
-    private double pos2Left_X = 120;
-    private double pos2Right_X = 220;
-    private double pos3Left_X = 220;
-    private double pos3Right_X = 320;
-    private double UPPER_Y = 80;
+    private double UPPER_X = 180;
+    private double LOWER_X = 80;
+//    private double pos1Left_X = 20;
+//    private double pos1Right_X = 120;
+//    private double pos2Left_X = 120;
+//    private double pos2Right_X = 220;
+//    private double pos3Left_X = 220;
+//    private double pos3Right_X = 320;
+    private double UPPER_Y = 65;
     private double LOWER_Y = 35;
     private List<MatOfPoint> contours = new ArrayList<>();
     private boolean showContours, isAccessible = true;
     private boolean found, skystoneIsCentered = false;
     private Moments bruh;
     private int contoursFound;
+    private double mThing;
+    private double maximumArea = 9000;
+    private double minimumArea = 15000;
+
+    //upper and lower bounds for the contours
+
 
 
     public void setShowContours(boolean b) {
@@ -79,39 +85,32 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
-                boolean matAreaInBounds = (matArea > 2500); // && (matArea < 100000000)
+                boolean matAreaInBounds = (matArea > 12000) && (matArea < 100000000);
 
-                if (y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
+                if (//x > LOWER_X && x < UPPER_X &&
+                        y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
+                        ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X &&
                         ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds)
-                {
 
+                {
                     found = true;
                     skystoneXPos = x;
                     skystoneYPos = y;
 
-                    if(x > pos1Left_X && x < pos1Right_X ||
-                            ADJUSTED_X > pos1Left_X && ADJUSTED_X < pos1Right_X)
-                    {
-                        pos1 = true;
-                    }
-
-                    else if(x > pos2Left_X && x < pos2Right_X ||
-                            ADJUSTED_X > pos2Left_X && ADJUSTED_X < pos2Right_X)
-                    {
-                        pos2 = true;
-                    }
-
-                    else if(x > pos3Left_X && x < pos3Right_X ||
-                            ADJUSTED_X > pos3Left_X && ADJUSTED_X < pos3Right_X)
-                    {
-                        pos3 = true;
-                    }
-
-                    else {
-                        pos1 = false;
-                        pos2 = false;
-                        pos3 = false;
-                    }
+//                    if(x > pos1Left_X && x < pos1Right_X ||
+//                            ADJUSTED_X > pos1Left_X && ADJUSTED_X < pos1Right_X)
+//                    {
+//                        pos1 = true;
+//                    }
+//
+//                    else if(x > pos2Left_X && x < pos2Right_X ||
+//                            ADJUSTED_X > pos2Left_X && ADJUSTED_X < pos2Right_X)
+//                    {
+//                        pos2 = true;
+//                    }
+//                    else {
+//                        pos3 = true;
+//                    }
                 }
 
             }
@@ -131,18 +130,18 @@ public class SkystoneContour extends OpenCvPipeline {
         return skystoneYPos;
     }
 
-    public int getSkystonePosition() {
-        if(found1 = true) {
-            return 1;
-        }
-        else if(found2 = true) {
-            return 2;
-        }
-        else if(found3 = true) {
-            return 3;
-        }
-        else { return 0; }
-    }
+//    public int getSkystonePosition() {
+//        if(found1 = true) {
+//            return 1;
+//        }
+//        else if(found2 = true) {
+//            return 2;
+//        }
+//        else if(found3 = true) {
+//            return 3;
+//        }
+//        else { return 0; }
+//    }
 
     public int getWidth() {
         return width;
