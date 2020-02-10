@@ -38,9 +38,9 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(29.5, 0.6);   //added
+        robot.drive(26, 0.6);   //added
         robot.turn(-110, 0.5);   //added
-        //robot.drive(-2, 0.5);
+        robot.drive(-2, 0.5);
 
         robot.update();
         lift.liftV4BMotorNoSync();
@@ -61,7 +61,7 @@ public class Auto_Red_Vision extends LinearOpMode {
                 telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
                 telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
                 telemetry.update();
-                robot.drive(8, 0.35);
+                robot.drive(9, 0.35);
                 robot.residentSleeper(100);
 //                vision.setSkystoneFalse();
 //                robot.residentSleeper(250);
@@ -79,6 +79,7 @@ public class Auto_Red_Vision extends LinearOpMode {
             foundSkystone = true;
         }
 
+        robot.strafe(4, 0.5);
         if(foundSkystone) {
             robot.drive(-13, 0.5);
         }
