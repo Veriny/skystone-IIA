@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="RED RED RED(VISION)_Collect_Deposit_Foundation_Park", group = "test")
-public class Auto_Red_Vision extends LinearOpMode {
+@Autonomous(name="RED Vision Test", group = "test")
+public class Auto_Red_Vision_Tester extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
     public Lift lift;
@@ -113,35 +113,36 @@ public class Auto_Red_Vision extends LinearOpMode {
         //robot.strafe(8, 0.4);
 
         phoneCam.stopStreaming();
-        robot.turn(-80, 0.4); //changed
-        robot.drive(-74  - count, 0.9);  //changed
-        robot.turn(-110, 0.5);
-
-        lift.liftV4BMotorNoSync();
-        robot.residentSleeper(400);
-        lift.dumpLiftMotorNoSync();
-        robot.residentSleeper(800);    //changed
-        lift.dumpV4BMotorNoSync();
-        robot.residentSleeper(250);    //changed
-        robot.drive(-18, 0.45); //changed
-        lift.dropLiftMotorNoSync();
-        robot.residentSleeper(1000);
-        lift.releaseNoSync();
-        lift.dumpLiftMotorNoSync();
-        foundationClaw.pushNoSync();
-        robot.residentSleeper(500);
-        lift.restV4BMotorNoSync();
-        robot.residentSleeper(500);
-        lift.restLiftMotorNoSync();
-        robot.residentSleeper(500);
-        robot.arcTurn(150, 11, 0.65, true);   //changed
-        foundationClaw.restNoSync();
-
-        robot.drive(-20, 0.8);  //changed
-        robot.strafe(23, 0.7);  //changed
-        robot.drive(28, 0.8); //changed
-
-
+        robot.turn(30, 0.4); //changed
+        robot.drive(-16, 0.4);
+//        robot.drive(-74  - count, 0.9);  //changed
+//        robot.turn(-110, 0.5);
+//
+//        lift.liftV4BMotorNoSync();
+//        robot.residentSleeper(400);
+//        lift.dumpLiftMotorNoSync();
+//        robot.residentSleeper(800);    //changed
+//        lift.dumpV4BMotorNoSync();
+//        robot.residentSleeper(250);    //changed
+//        robot.drive(-18, 0.45); //changed
+//        lift.dropLiftMotorNoSync();
+//        robot.residentSleeper(1000);
+//        lift.releaseNoSync();
+//        lift.dumpLiftMotorNoSync();
+//        foundationClaw.pushNoSync();
+//        robot.residentSleeper(500);
+//        lift.restV4BMotorNoSync();
+//        robot.residentSleeper(500);
+//        lift.restLiftMotorNoSync();
+//        robot.residentSleeper(500);
+//        robot.arcTurn(150, 11, 0.65, true);   //changed
+//        foundationClaw.restNoSync();
+//
+//        robot.drive(-20, 0.8);  //changed
+//        robot.strafe(23, 0.7);  //changed
+//        robot.drive(28, 0.8); //changed
+//
+//
 
     }
 }
