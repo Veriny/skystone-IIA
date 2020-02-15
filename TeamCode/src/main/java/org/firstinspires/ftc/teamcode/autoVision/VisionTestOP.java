@@ -36,6 +36,8 @@ public class VisionTestOP extends LinearOpMode {
 //        while (!vision.skystoneIsCentered()) {
 //            intake.succ(1);
 //        }
+        robot.residentSleeper(1000);
+        vision.setSkystoneFalse();
         while(opModeIsActive()) {
             telemetry.addData("Frame Count", phoneCam.getFrameCount());
             telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
@@ -49,7 +51,9 @@ public class VisionTestOP extends LinearOpMode {
             telemetry.addData("Height", vision.getHeight());
             telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
             telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
+            telemetry.addData("Skystone Area", vision.getArea());
             telemetry.update();
+
         }
     }
 }

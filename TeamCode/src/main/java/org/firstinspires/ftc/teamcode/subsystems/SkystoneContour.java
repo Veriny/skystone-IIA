@@ -26,8 +26,9 @@ public class SkystoneContour extends OpenCvPipeline {
     private boolean found1, found2, found3;
     private int width, height;
     private double skystoneXPos, skystoneYPos;
+    private double area;
     //Important
-    private double UPPER_X = 180;
+    private double UPPER_X = 150;
     private double LOWER_X = 80;
 //    private double pos1Left_X = 20;
 //    private double pos1Right_X = 120;
@@ -85,14 +86,15 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
-                boolean matAreaInBounds = (matArea > 12000) && (matArea < 100000000);
+                boolean matAreaInBounds = (matArea > 15000) && (matArea < 100000000);
 
-                if (//x > LOWER_X && x < UPPER_X &&
+                if (x > LOWER_X && x < UPPER_X &&
                         y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
                         ADJUSTED_X > LOWER_X && ADJUSTED_X < UPPER_X &&
                         ADJUSTED_Y > LOWER_Y && ADJUSTED_Y < UPPER_Y && matAreaInBounds)
 
                 {
+                    area = matArea;
                     found = true;
                     skystoneXPos = x;
                     skystoneYPos = y;
@@ -152,6 +154,10 @@ public class SkystoneContour extends OpenCvPipeline {
 
     public boolean getStoneCentered()  {
         return skystoneIsCentered;
+    }
+
+    public double getArea() {
+        return area;
     }
 
     public void setSkystoneFalse() {

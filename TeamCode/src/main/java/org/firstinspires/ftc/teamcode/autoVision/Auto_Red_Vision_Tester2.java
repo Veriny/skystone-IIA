@@ -13,8 +13,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="RED Vision Test", group = "test")
-public class Auto_Red_Vision_Tester extends LinearOpMode {
+@Autonomous(name="RED Vision Test2", group = "test")
+public class Auto_Red_Vision_Tester2 extends LinearOpMode {
     public Drivetrain robot;
     public Intake intake;
     public Lift lift;
@@ -38,59 +38,80 @@ public class Auto_Red_Vision_Tester extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(28, 0.6);   //added
+        robot.drive(29, 0.6);   //added
         robot.turn(-110, 0.5);   //added
-        robot.drive(-2, 0.5);
+        robot.drive(9, 0.5);
+        robot.residentSleeper(250);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+        robot.residentSleeper(1500);
+        vision.setSkystoneFalse();
 
         robot.update();
         lift.liftV4BMotorNoSync();
 
-        //here's where you add vision
-
         boolean foundSkystone = false;
         int count = 0;
-        for(int i = 0; i < 2; i++) {
-            if(i == 0) {
-                robot.drive(9.5, 0.35);
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-                robot.residentSleeper(1000);
-            }
-            else {
-                if (!vision.getStoneCentered()) {
-                    telemetry.addData("contourCount", vision.getContoursFound());
-                    telemetry.addData("Skystone found", vision.getStoneCentered());
-                    telemetry.addData("Width", vision.getWidth());
-                    telemetry.addData("Height", vision.getHeight());
-                    telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
-                    telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
-                    telemetry.update();
-                    robot.drive(9.5, 0.35);
 
-                    //                vision.setSkystoneFalse();
-                    robot.residentSleeper(500);
-                    telemetry.addLine("Entered loop");
-                    count += 8;
-                } else {
-                    foundSkystone = true;
-                    telemetry.addData("Found Skystone", 0);
-                    break;
-                }
-            }
+
+        if (!vision.getStoneCentered()) {
+            robot.drive(8.5, 0.35);
+            count += 8.5;
         }
-        robot.residentSleeper(250);
+        else {
+            foundSkystone = true;
+        }
+
         if(vision.getStoneCentered()) {
             foundSkystone = true;
         }
 
-        robot.strafe(2, 0.4);
         if(foundSkystone) {
             robot.drive(-9, 0.5);
         }
-        else {
-            robot.drive(-3, 0.5);
-            count += 8;
-            telemetry.addData("rip", 1);
-        }
+
+        telemetry.addData("contourCount", vision.getContoursFound());
+        telemetry.addData("Skystone found", vision.getStoneCentered());
+        telemetry.addData("Width", vision.getWidth());
+        telemetry.addData("Height", vision.getHeight());
+        telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
+        telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
+        telemetry.addData("Skystone Area", vision.getArea());
+        telemetry.update();
+
+
+        //here's where you add vision
+
+//        boolean foundSkystone = false;
+//        int count = 0;
+//        for(int i = 0; i < 2; i++) {
+//            if(i == 0) {
+//                robot.drive(9.5, 0.35);
+//                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+//                robot.residentSleeper(1000);
+//            }
+//            else {
+//                if (!vision.getStoneCentered()) {
+//                    telemetry.addData("contourCount", vision.getContoursFound());
+//                    telemetry.addData("Skystone found", vision.getStoneCentered());
+//                    telemetry.addData("Width", vision.getWidth());
+//                    telemetry.addData("Height", vision.getHeight());
+//                    telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
+//                    telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
+//                    telemetry.update();
+//                    robot.drive(9.5, 0.35);
+//
+//                    //                vision.setSkystoneFalse();
+//                    robot.residentSleeper(500);
+//                    telemetry.addLine("Entered loop");
+//                    count += 8;
+//                } else {
+//                    foundSkystone = true;
+//                    telemetry.addData("Found Skystone", 0);
+//                    break;
+//                }
+//            }
+//        }
+
         telemetry.addData("contourCount", vision.getContoursFound());
         telemetry.addData("Skystone found", vision.getStoneCentered());
         telemetry.addData("Width", vision.getWidth());
@@ -118,7 +139,7 @@ public class Auto_Red_Vision_Tester extends LinearOpMode {
         phoneCam.stopStreaming();
         robot.turn(30, 0.4); //changed
         robot.strafe(count, 0.5);
-        robot.drive(-24, 0.5);
+        robot.drive(-26, 0.5);
 //        robot.drive(-74  - count, 0.9);  //changed
 //        robot.turn(-110, 0.5);
 //
