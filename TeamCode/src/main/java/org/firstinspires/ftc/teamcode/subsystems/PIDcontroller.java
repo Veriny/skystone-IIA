@@ -39,10 +39,13 @@ public class PIDcontroller {
 
     //not necessary if i reinitialize PIDcontroller every time i want to drive
     public void resetPID() {
-        positionError= 0;
+        positionError = 0;
         derivativeError = 0;
         integralError = 0;
     }
 
+    public double getPrevError() {
+        return prevError;
+    }
 }
 

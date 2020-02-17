@@ -57,9 +57,9 @@ public class Drivetrain {
             topLeft.setDirection(DcMotorSimple.Direction.FORWARD);
             bottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
-            kP = 1.0;
-            kI = 1.0;
-            kD = 1.0;
+            kP = .7;
+            kI = .7;
+            kD = .7;
 
 //            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
 //            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
@@ -86,18 +86,22 @@ public class Drivetrain {
         double rotations = position / (WHEEL_DIAMETER * Math.PI);
         int ticks = (int) rotations * TICKS_PER_ROTATION;
         mRunTime = new ElapsedTime();
-        tL = new PIDcontroller(1.0, 1.0, 1.0);
-        tR = new PIDcontroller(1.0, 1.0, 1.0);
-        bL = new PIDcontroller(1.0, 1.0, 1.0);
-        bR = new PIDcontroller(1.0, 1.0, 1.0);
+        tL = new PIDcontroller(kP, kI, kD);
+        tR = new PIDcontroller(kP, kI, kD);
+        bL = new PIDcontroller(kP, kI, kD);
+        bR = new PIDcontroller(kP, kI, kD);
         resetEncoders();
         mRunTime.reset();
         while (Math.abs(topRight.getCurrentPosition()) != Math.abs(ticks) || Math.abs(topLeft.getCurrentPosition()) != Math.abs(ticks) ||
                 Math.abs(bottomLeft.getCurrentPosition()) != Math.abs(ticks) || Math.abs(bottomRight.getCurrentPosition()) != Math.abs(ticks)) {
-            topRight.setPower(tR.getPower(ticks, topRight.getCurrentPosition(), mRunTime.seconds()));
-            topLeft.setPower(tL.getPower(ticks, topLeft.getCurrentPosition(), mRunTime.seconds()));
-            bottomRight.setPower(bR.getPower(ticks, bottomRight.getCurrentPosition(), mRunTime.seconds()));
-            bottomLeft.setPower(bL.getPower(ticks, bottomLeft.getCurrentPosition(), mRunTime.seconds()));
+            topRight.setPower(tR.getPower(Math.abs(ticks), Math.abs(topRight.getCurrentPosition()), mRunTime.seconds()));
+            topLeft.setPower(tL.getPower(Math.abs(ticks), Math.abs(topLeft.getCurrentPosition()), mRunTime.seconds()));
+            bottomRight.setPower(bR.getPower(Math.abs(ticks),  Math.abs(bottomRight.getCurrentPosition()), mRunTime.seconds()));
+            bottomLeft.setPower(bL.getPower(Math.abs(ticks), Math.abs(bottomLeft.getCurrentPosition()), mRunTime.seconds()));
+            telemetry.addData("topRightError: ", tR.getPrevError());
+            telemetry.addData("topLeftError: ", tL.getPrevError());
+            telemetry.addData("bottomRightError: ", bR.getPrevError());
+            telemetry.addData("bottomLeftError: ", bL.getPrevError());
         }
         resetEncoders();
     }
@@ -276,6 +280,11 @@ public class Drivetrain {
             prevErrorBR = error[1];
             prevErrorTL = error[2];
             prevErrorBL = error[3];
+           telemetry.addData("BackLeftError: ", prevErrorBL);
+           telemetry.addData("TopLeftError: ", prevErrorTL);
+           telemetry.addData("TopRightError: ", prevErrorTR);
+           telemetry.addData("BottomRightError", prevErrorBR);
+           telemetry.update();
         }
         mRunTime.reset();
         resetEncoders();

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkystoneContour extends OpenCvPipeline {
+    private ElapsedTime time;
     private Mat yuv = new Mat();
     private Mat thresholded = new Mat();
     private Mat structElement = new Mat();
@@ -46,6 +49,7 @@ public class SkystoneContour extends OpenCvPipeline {
     private double mThing;
     private double maximumArea = 9000;
     private double minimumArea = 15000;
+    private boolean waited = false;
 
     //upper and lower bounds for the contours
 
@@ -59,10 +63,17 @@ public class SkystoneContour extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+        time = new ElapsedTime();
+        time.reset();
+        while(!waited) {
+            if(time.milliseconds() > 500) {
+                waited = true;
+                break;
+            }
+        }
         width = input.width();
         height = input.height();
         isAccessible = false;
-
         showContours = true;
         yuv = input.clone();
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_BGR2HSV);

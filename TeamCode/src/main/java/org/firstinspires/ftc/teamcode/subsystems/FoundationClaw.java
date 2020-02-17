@@ -10,8 +10,8 @@ public class FoundationClaw {
     //servos in same orientation I think
     private final double pushPositionA = 0.8;
     private final double pushPositionB = 0.2;
-    private final double restPositionA = 0.0;
-    private final double restPositionB = 1.0;
+    private final double restPositionA = 0.2;
+    private final double restPositionB = 0.8;
     public FoundationClaw(Servo a, Servo b) {
         this.servoA = a;
         this.servoB = b;

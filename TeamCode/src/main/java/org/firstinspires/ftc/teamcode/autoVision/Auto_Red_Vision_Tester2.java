@@ -39,11 +39,13 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
         robot.update();
 //        robot.strafe(24, 0.4); //changed
         robot.drive(29, 0.6);   //added
+        robot.residentSleeper(500);
+        robot.strafe(6, 0.6);
         robot.turn(-110, 0.5);   //added
         robot.drive(9, 0.5);
         robot.residentSleeper(250);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-        robot.residentSleeper(1500);
+        robot.residentSleeper(1000);
         vision.setSkystoneFalse();
 
         robot.update();
@@ -56,6 +58,7 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
         if (!vision.getStoneCentered()) {
             robot.drive(8.5, 0.35);
             count += 8.5;
+            robot.residentSleeper(750);
         }
         else {
             foundSkystone = true;

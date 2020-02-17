@@ -38,56 +38,83 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(28, 0.6);   //added
+        robot.drive(29, 0.6);   //added
+        robot.residentSleeper(500);
+        robot.strafe(6, 0.5);
         robot.turn(-110, 0.5);   //added
-        robot.drive(-2, 0.5);
+        robot.drive(9, 0.5);
+        robot.residentSleeper(250);
+        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+        robot.residentSleeper(1000);
+        vision.setSkystoneFalse();
 
         robot.update();
         lift.liftV4BMotorNoSync();
 
-        //here's where you add vision
-        phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-        robot.residentSleeper(1000);
-
-        vision.setSkystoneFalse();
         boolean foundSkystone = false;
         int count = 0;
-        for(int i = 0; i < 2; i++) {
-            if (!vision.getStoneCentered()) {
-                telemetry.addData("contourCount", vision.getContoursFound());
-                telemetry.addData("Skystone found", vision.getStoneCentered());
-                telemetry.addData("Width", vision.getWidth());
-                telemetry.addData("Height", vision.getHeight());
-                telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
-                telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
-                telemetry.update();
-                robot.drive(9.5, 0.35);
-                robot.residentSleeper(100);
-//                vision.setSkystoneFalse();
-//                robot.residentSleeper(250);
-                telemetry.addLine("Entered loop");
-                count += 8;
-            }
-            else {
-                foundSkystone = true;
-                telemetry.addData("Found Skystone", 0);
-                break;
-            }
+
+
+        if (!vision.getStoneCentered()) {
+            robot.drive(8.5, 0.35);
+            count += 8.5;
+            robot.residentSleeper(750);
         }
-        robot.residentSleeper(250);
+        else {
+            foundSkystone = true;
+        }
+
         if(vision.getStoneCentered()) {
             foundSkystone = true;
         }
 
-        robot.strafe(2, 0.4);
         if(foundSkystone) {
             robot.drive(-9, 0.5);
         }
-        else {
-            robot.drive(-3, 0.5);
-            count += 8;
-            telemetry.addData("rip", 1);
-        }
+
+        telemetry.addData("contourCount", vision.getContoursFound());
+        telemetry.addData("Skystone found", vision.getStoneCentered());
+        telemetry.addData("Width", vision.getWidth());
+        telemetry.addData("Height", vision.getHeight());
+        telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
+        telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
+        telemetry.addData("Skystone Area", vision.getArea());
+        telemetry.update();
+
+
+        //here's where you add vision
+
+//        boolean foundSkystone = false;
+//        int count = 0;
+//        for(int i = 0; i < 2; i++) {
+//            if(i == 0) {
+//                robot.drive(9.5, 0.35);
+//                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+//                robot.residentSleeper(1000);
+//            }
+//            else {
+//                if (!vision.getStoneCentered()) {
+//                    telemetry.addData("contourCount", vision.getContoursFound());
+//                    telemetry.addData("Skystone found", vision.getStoneCentered());
+//                    telemetry.addData("Width", vision.getWidth());
+//                    telemetry.addData("Height", vision.getHeight());
+//                    telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
+//                    telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
+//                    telemetry.update();
+//                    robot.drive(9.5, 0.35);
+//
+//                    //                vision.setSkystoneFalse();
+//                    robot.residentSleeper(500);
+//                    telemetry.addLine("Entered loop");
+//                    count += 8;
+//                } else {
+//                    foundSkystone = true;
+//                    telemetry.addData("Found Skystone", 0);
+//                    break;
+//                }
+//            }
+//        }
+
         telemetry.addData("contourCount", vision.getContoursFound());
         telemetry.addData("Skystone found", vision.getStoneCentered());
         telemetry.addData("Width", vision.getWidth());
@@ -100,7 +127,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.drive(24, 0.4);  //changed
         intake.noSuccNoSync();
         robot.residentSleeper(200);
-       // robot.strafe(-6, 0.5);
+        // robot.strafe(-6, 0.5);
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
@@ -114,7 +141,7 @@ public class Auto_Red_Vision extends LinearOpMode {
 
         phoneCam.stopStreaming();
         robot.turn(-80, 0.4); //changed
-        robot.drive(-74  - count, 0.9);  //changed
+        robot.drive(-98  - count, 0.9);  //changed
         robot.turn(-110, 0.5);
 
         lift.liftV4BMotorNoSync();
@@ -123,7 +150,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.residentSleeper(800);    //changed
         lift.dumpV4BMotorNoSync();
         robot.residentSleeper(250);    //changed
-        robot.drive(-18, 0.45); //changed
+        robot.drive(-14, 0.5); //changed
         lift.dropLiftMotorNoSync();
         robot.residentSleeper(1000);
         lift.releaseNoSync();
@@ -134,11 +161,11 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(150, 11, 0.65, true);   //changed
+        robot.arcTurn(150, 11, 0.75, true);   //changed
         foundationClaw.restNoSync();
 
         robot.drive(-20, 0.8);  //changed
-        robot.strafe(23, 0.7);  //changed
+        robot.strafe(24, 0.7);  //changed
         robot.drive(28, 0.8); //changed
 
 
