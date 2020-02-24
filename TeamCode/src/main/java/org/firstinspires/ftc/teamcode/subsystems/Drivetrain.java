@@ -1,11 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 //comp version - final
 public class Drivetrain {
@@ -35,12 +41,13 @@ public class Drivetrain {
 //    private double d_turn = 0;
 
 
-    public Drivetrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t) {
+    public Drivetrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t, HardwareMap hardwareMap) {
         this.topLeft = tl;
         this.bottomRight = br;
         this.topRight = tr;
         this.bottomLeft = bl;
         this.telemetry = t;
+
 
         if(isAuto) {
             topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -61,6 +68,17 @@ public class Drivetrain {
             kI = .7;
             kD = .7;
 
+            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+
+            parameters.mode                = BNO055IMU.SensorMode.IMU;
+            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+            parameters.loggingEnabled      = false;
+
+            imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+            imu.initialize(parameters);
+
 //            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
 //            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
         }
@@ -80,6 +98,29 @@ public class Drivetrain {
         topLeft.setPower(((-x)+(-y)+(-z)));
         bottomRight.setPower(((x)+(y)+(-z)));
         topRight.setPower(((x)+(-y)+(-z)));
+    }
+
+    public double getAngle()
+    {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
     }
 
     public void improvedPIDdrive(double position) {
@@ -202,6 +243,37 @@ public class Drivetrain {
         telemetry.addLine("Moved with position ticks: " + position);
     }
 
+    private void resetAngle()
+    {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        globalAngle = 0;
+    }
+
+    public void turnByIMU(double degrees, double power) {
+//        double rotations = degrees / 360 / 2.2;
+//        double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
+        motorRunWithoutEncoder();
+        if(degrees > 0) {
+            turnNoEncoder(power);
+        }
+        else {
+            turnNoEncoder(-power);
+        }
+        while(isRunning()) {
+            if (Math.abs(degrees) < Math.abs(getAngle())) {
+                stop();
+                break;
+            }
+            else {
+                telemetry.addLine("Angle" + getAngle());
+            }
+        }
+        stop();
+        motorRunByEncoder();
+        residentSleeper(250);
+        resetAngle();
+    }
+
     public void arcTurn(double degrees, int radius, double power, boolean leftSideOuter) {
         double distanceOuter = calculateTicks(degrees / 360 * (2 * Math.PI) * (BOT_DIAMETER + radius));
         double distanceInner = calculateTicks(degrees / 360 * (2 * Math.PI) * radius);
@@ -296,6 +368,29 @@ public class Drivetrain {
         return inches;
     }
 
+    public void motorRunByEncoder() {
+        topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bottomLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bottomRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        topLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bottomLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bottomRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        bottomRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        topLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        bottomLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+    }
+
+    public void motorRunWithoutEncoder() {
+        topLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        topRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bottomLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bottomRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     public void resetEncoders() {
         bottomRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -303,11 +398,25 @@ public class Drivetrain {
         topLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public void stop() {
+        bottomLeft.setPower(0.0);
+        bottomLeft.setPower(0.0);
+        bottomLeft.setPower(0.0);
+        bottomLeft.setPower(0.0);
+    }
+
     private void motorDrive(DcMotor motor, double ticks, double power) {
         //TODO: MotorDrive
         motor.setTargetPosition((int) ticks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor.setPower(power);
+    }
+
+    public void turnNoEncoder(double power) {
+        bottomLeft.setPower(power);
+        topLeft.setPower(power);
+        bottomRight.setPower(-power);
+        topRight.setPower(-power);
     }
 
     private double calculateTicksRot(double inches) {
@@ -325,6 +434,10 @@ public class Drivetrain {
     private int averageEncoders() {
         int average = (topLeft.getCurrentPosition() + topRight.getCurrentPosition() + bottomLeft.getCurrentPosition() + bottomRight.getCurrentPosition()) / 4;
         return average;
+    }
+
+    public boolean isRunning() {
+        return topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy();
     }
 
     private void jigglypuff() {
