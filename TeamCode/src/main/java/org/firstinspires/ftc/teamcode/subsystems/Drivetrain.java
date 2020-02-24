@@ -9,23 +9,23 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 //comp version - final
 public class Drivetrain {
-    private DcMotor topRight;
-    private DcMotor bottomRight;
-    private DcMotor topLeft;
-    private DcMotor bottomLeft;
-    private Telemetry telemetry;
-    private SkystoneContour skystoneContour;
+    protected DcMotor topRight;
+    protected DcMotor bottomRight;
+    protected DcMotor topLeft;
+    protected DcMotor bottomLeft;
+    protected Telemetry telemetry;
+    protected SkystoneContour skystoneContour;
 //    private PIDCoefficients pidCoefficientDistance;
 //    private PIDCoefficients pidCoefficientTurning;
-    private ElapsedTime timeX;
+    protected ElapsedTime timeX;
 
-    private static final int TICKS_PER_ROTATION = 679 * (4/3);
-    private static final int WHEEL_DIAMETER = 4;
-    private static final double BOT_DIAMETER = 17.5;
-    private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
-    private ElapsedTime mRunTime;
-    private PIDcontroller tR, tL, bR, bL;
-    private double kP, kI, kD;
+    protected static final int TICKS_PER_ROTATION = 679 * (4/3);
+    protected static final int WHEEL_DIAMETER = 4;
+    protected static final double BOT_DIAMETER = 17.5;
+    protected static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
+    protected ElapsedTime mRunTime;
+    protected PIDcontroller tR, tL, bR, bL;
+    protected double kP, kI, kD;
 
 //    private double p_distance = 0.05;
 //    private double i_distance = 0.0000004;
