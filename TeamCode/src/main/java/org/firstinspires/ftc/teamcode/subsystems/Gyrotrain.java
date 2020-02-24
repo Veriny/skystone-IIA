@@ -4,6 +4,7 @@ import android.graphics.drawable.GradientDrawable;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -17,20 +18,22 @@ public class Gyrotrain extends Drivetrain{
     private static final double HEADING_THRESHOLD = 1;
     private static final double P_TURN_COEFF = .1;
     private static final double P_DRIVE_COEFF = .15;
-    private static BNO055IMU imu;
+    private BNO055IMU imu;
     private static Orientation prevAngle;
     private static double globalAngle = 0;
     private static final double ANGLE_CORRECTION = .3;
-    public Gyrotrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t, BNO055IMU imu) {
-        super(tl, bl, tr, br, isAuto, t);
-        this.imu = imu;
+    public Gyrotrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t, HardwareMap h) throws InterruptedException{
+        super(tl, bl, tr, br, isAuto, t, h);
+        this.imu = h.get(BNO055IMU.class, "imu"); // Internally connected to I2C port 0 and configured to address 0x28
         prevAngle = new Orientation();
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+
         imu.initialize(parameters);
         while (!imu.isGyroCalibrated()) {
             sleep(50);
-            continue;
         }
+
     }
 
     private void resetAngle() { //Basically resets the z angle back to zero lmao
@@ -47,7 +50,7 @@ public class Gyrotrain extends Drivetrain{
         else {
             correction = -.1;
         }
-        correction = correction * .1;
+        correction = correction * gain;
         return correction;
     }
 
@@ -64,6 +67,8 @@ public class Gyrotrain extends Drivetrain{
         }
         globalAngle += dAngle;
         prevAngle = angles;
+        telemetry.addData("Global angle: ",  globalAngle);
+        telemetry.update();
         return globalAngle;
     }
 
@@ -92,12 +97,11 @@ public class Gyrotrain extends Drivetrain{
                 bottomLeft.setPower(power);
             }
         } while (topRight.isBusy() || topLeft.isBusy() || bottomRight.isBusy() || bottomLeft.isBusy());
-
+        stop();
+        resetEncoders();
     }
 
-    @Override
-    private void motorDrive(DcMotor motor, double ticks, double power) {
-        //TODO: MotorDrive
+    public void motorDrive(DcMotor motor, double ticks) {
         motor.setTargetPosition((int) ticks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
