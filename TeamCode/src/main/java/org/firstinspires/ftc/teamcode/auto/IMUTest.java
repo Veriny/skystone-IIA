@@ -24,7 +24,7 @@ public class IMUTest extends LinearOpMode {
 
         waitForStart();
         while(opModeIsActive()) {
-            telemetry.addData("Angle", robot.getAngle());
+//            telemetry.addData("Angle", robot.getAngle());
         }
 //        robot.turnByIMU(90, 0.5);
 //        robot.residentSleeper(5000);
