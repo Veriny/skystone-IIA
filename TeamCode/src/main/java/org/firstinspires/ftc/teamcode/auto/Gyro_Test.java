@@ -17,13 +17,12 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="PID Test", group = "test")
+@Autonomous(name="Gyro test", group = "test")
 public class Gyro_Test extends LinearOpMode {
     public Gyrotrain robot;
     public Intake intake;
     public Lift lift;
     public FoundationClaw foundationClaw;
-
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -31,9 +30,7 @@ public class Gyro_Test extends LinearOpMode {
         intake = new Intake(hardwareMap.dcMotor.get("leftIntake"), hardwareMap.dcMotor.get("rightIntake"));
         lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), true);
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
-        AutoTransitioner.transitionOnStop(this, "TestOPMode");
         waitForStart();
-        robot.improvedPIDdrive(10);
-        robot.improvedPIDdrive(300);
+        robot.drive(.7, 200);
     }
 }

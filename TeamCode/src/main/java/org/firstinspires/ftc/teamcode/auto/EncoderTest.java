@@ -32,6 +32,5 @@ public class EncoderTest extends LinearOpMode {
         lift.testLiftMotorNoSync();
         lift.liftV4BMotor();
 
-
     }
 }

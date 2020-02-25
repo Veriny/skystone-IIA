@@ -24,15 +24,19 @@ public class Gyrotrain extends Drivetrain{
     private static final double ANGLE_CORRECTION = .3;
     public Gyrotrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t, HardwareMap h) throws InterruptedException{
         super(tl, bl, tr, br, isAuto, t, h);
+        telemetry.addData("Gyro calibrating...", true);
+        telemetry.update();
         this.imu = h.get(BNO055IMU.class, "imu"); // Internally connected to I2C port 0 and configured to address 0x28
         prevAngle = new Orientation();
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
-
         imu.initialize(parameters);
         while (!imu.isGyroCalibrated()) {
             sleep(50);
         }
+        telemetry.addData("Gyro calibrating...", false);
+        telemetry.update();
+
 
     }
 
@@ -67,28 +71,40 @@ public class Gyrotrain extends Drivetrain{
         }
         globalAngle += dAngle;
         prevAngle = angles;
-        telemetry.addData("Global angle: ",  globalAngle);
-        telemetry.update();
         return globalAngle;
     }
 
     @Override
     public void drive(double power, double position) {
-        double pos = (calculateTicks(position));
+        double pos = (position / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
+        resetAngle();
         motorDrive(topRight, pos, power);
         motorDrive(topLeft, pos, power);
         motorDrive(bottomRight, pos, power);
         motorDrive(bottomLeft, pos, power);
-        resetAngle();
-
         do {
-            if (getAngle() >= .5) {
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
+
+            telemetry.update();
+            if (getAngle() <= -1) {
                 topLeft.setPower(power - ANGLE_CORRECTION);
                 bottomLeft.setPower(power - ANGLE_CORRECTION);
+                bottomRight.setPower(power);
+                topRight.setPower(power);
             }
-            else if (getAngle() <= .5) {
+            else if (getAngle() >= 1) {
                 bottomRight.setPower(power - ANGLE_CORRECTION);
                 topRight.setPower(power - ANGLE_CORRECTION);
+                bottomLeft.setPower(power);
+                topLeft.setPower(power);
             }
             else {
                 bottomRight.setPower(power);
@@ -96,7 +112,8 @@ public class Gyrotrain extends Drivetrain{
                 topLeft.setPower(power);
                 bottomLeft.setPower(power);
             }
-        } while (topRight.isBusy() || topLeft.isBusy() || bottomRight.isBusy() || bottomLeft.isBusy());
+        } while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()));
         stop();
         resetEncoders();
     }
