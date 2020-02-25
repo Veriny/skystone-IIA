@@ -54,7 +54,7 @@ public class Gyrotrain extends Drivetrain{
         return correction;
     }
 
-    private double getAngle() {
+    public double getAngle() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double dAngle = angles.firstAngle - prevAngle.firstAngle;
 
@@ -106,7 +106,31 @@ public class Gyrotrain extends Drivetrain{
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void turnByIMU(double degrees, double power) throws InterruptedException {
+        resetAngle();
+        motorRunWithoutEncoder();
+        sleep(100);
+        if(degrees > 0) {
+            turnWithoutEncoder(power);
+        }
+        else {
+            turnNoEncoder(-power);
+        }
+        while(Math.abs(getAngle()) < Math.abs(degrees)) {
 
+        }
+        stop();
+        motorRunByEncoder();
+        sleep(250);
+        resetAngle();
+    }
+
+    private void turnWithoutEncoder(double power) {
+        topLeft.setPower(power);
+        topRight.setPower(-power);
+        bottomLeft.setPower(power);
+        bottomRight.setPower(-power);
+    }
 
 
 
