@@ -231,9 +231,9 @@ public class Drivetrain {
         jigglypuff();
     }
 
-    public void turn(double degrees, double power) {
+    public void turn(double degrees, double power) throws InterruptedException {
         //TODO: Write method for turning
-        double rotations = degrees / 360 / 2.2;
+        double rotations = degrees / 360 / 1.7625;
         double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
         motorDrive(bottomLeft, position, power);
         motorDrive(bottomRight, -position, power);
@@ -419,7 +419,7 @@ public class Drivetrain {
         topRight.setPower(-power);
     }
 
-    private double calculateTicksRot(double inches) {
+    public double calculateTicksRot(double inches) {
         return (inches / WHEEL_DIAMETER) * TICKS_PER_ROTATION;
     }
 

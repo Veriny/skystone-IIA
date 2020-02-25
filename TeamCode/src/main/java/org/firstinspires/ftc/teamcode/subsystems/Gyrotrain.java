@@ -123,21 +123,57 @@ public class Gyrotrain extends Drivetrain{
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void turnByIMU(double degrees, double power) throws InterruptedException {
+    @Override
+    public void turn(double degrees, double power) throws InterruptedException {
         resetAngle();
-        motorRunWithoutEncoder();
+        double rotations = degrees / 360 / 1.7625;
+        double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
         sleep(100);
-        if(degrees > 0) {
-            turnWithoutEncoder(power);
-        }
-        else {
-            turnNoEncoder(-power);
-        }
-        while(Math.abs(getAngle()) < Math.abs(degrees)) {
+        motorDrive(bottomLeft, position, power);
+        motorDrive(bottomRight, -position, power);
+        motorDrive(topLeft, position, power);
+        motorDrive(topRight, -position, power);
+        while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
 
+            telemetry.update();
         }
-        stop();
-        motorRunByEncoder();
+        sleep(250);
+        double degreeDiff = degrees + getAngle();
+        double correctedRotations = degreeDiff / 360 / 1.7625;
+        double correctedPosition = calculateTicksRot(correctedRotations * BOT_CIRCUMFERENCE);
+        telemetry.addData("Corrected degrees", degreeDiff);
+        telemetry.addData("Corrected rotations", correctedRotations);
+        telemetry.addData("Corrected position", correctedPosition);
+        telemetry.update();
+        motorDrive(bottomLeft, correctedPosition, power);
+        motorDrive(bottomRight, -correctedPosition, power);
+        motorDrive(topLeft, correctedPosition, power);
+        motorDrive(topRight, -correctedPosition, power);
+        while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Corrected position", correctedPosition);
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
+
+            telemetry.update();
+        }
         sleep(250);
         resetAngle();
     }

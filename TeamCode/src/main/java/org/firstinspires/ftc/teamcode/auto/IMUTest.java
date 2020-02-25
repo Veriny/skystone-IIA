@@ -24,14 +24,6 @@ public class IMUTest extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
 
         waitForStart();
-        while(opModeIsActive()) {
-            telemetry.addData("Angle", robot.getAngle());
-            telemetry.update();
-        }
-//        robot.turnByIMU(90, 0.5);
-//        robot.residentSleeper(5000);
-//        robot.turnByIMU(-90, 0.8);
-//        robot.residentSleeper(5000);
-//        robot.turn(180, 0.6);
+        robot.turn(90, 0.5);
     }
 }
