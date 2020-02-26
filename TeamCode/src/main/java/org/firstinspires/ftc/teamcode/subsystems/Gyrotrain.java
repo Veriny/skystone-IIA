@@ -118,6 +118,62 @@ public class Gyrotrain extends Drivetrain{
         resetEncoders();
     }
 
+    @Override
+    public void strafe(double distance, double power) {
+        double pos = (distance / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
+        resetAngle();
+        motorDrive(topRight, -pos, power);
+        motorDrive(topLeft, pos, power);
+        motorDrive(bottomRight, pos, power);
+        motorDrive(bottomLeft, -pos, power);
+        do {
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
+
+            telemetry.update();
+            if (90 - getAngle() <= -1) {
+                if (distance < 0) tLbRcorrect(power);
+                else bLtRcorrect(power);
+            }
+            else if (90 - getAngle() >= 1) {
+                if (distance < 0) bLtRcorrect(power);
+                else tLbRcorrect(power);
+            }
+            else {
+                bottomRight.setPower(power);
+                topRight.setPower(power);
+                topLeft.setPower(power);
+                bottomLeft.setPower(power);
+            }
+        } while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()));
+        stop();
+        resetEncoders();
+    }
+
+    //Correction Methods
+    private void tLbRcorrect(double power) {
+        bottomLeft.setPower(power - ANGLE_CORRECTION);
+        topRight.setPower(power - ANGLE_CORRECTION);
+        topLeft.setPower(power);
+        bottomRight.setPower(power);
+    }
+
+    private void bLtRcorrect(double power)  {
+        topLeft.setPower(power - ANGLE_CORRECTION);
+        bottomRight.setPower(power - ANGLE_CORRECTION);
+        topRight.setPower(power);
+        bottomLeft.setPower(power);
+    }
+
+
     public void motorDrive(DcMotor motor, double ticks) {
         motor.setTargetPosition((int) ticks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
