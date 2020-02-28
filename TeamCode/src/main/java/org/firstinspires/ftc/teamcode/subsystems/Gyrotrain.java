@@ -75,7 +75,7 @@ public class Gyrotrain extends Drivetrain{
     }
 
     @Override
-    public void drive(double power, double position) {
+    public void drive(double position, double power) {
         double pos = (position / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
         resetAngle();
         motorDrive(topRight, pos, power);
@@ -204,6 +204,8 @@ public class Gyrotrain extends Drivetrain{
             telemetry.update();
         }
         sleep(250);
+        resetEncoders();
+        telemetry.addData("Encoder turn complete", degrees);
         double degreeDiff = degrees + getAngle();
         double correctedRotations = degreeDiff / 360 / 1.7625;
         double correctedPosition = calculateTicksRot(correctedRotations * BOT_CIRCUMFERENCE);
