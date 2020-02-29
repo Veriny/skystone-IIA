@@ -15,26 +15,23 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 //comp version - final
 public class Drivetrain {
-    private DcMotor topRight;
-    private DcMotor bottomRight;
-    private DcMotor topLeft;
-    private DcMotor bottomLeft;
-    private Telemetry telemetry;
-    private SkystoneContour skystoneContour;
+    protected DcMotor topRight;
+    protected DcMotor bottomRight;
+    protected DcMotor topLeft;
+    protected DcMotor bottomLeft;
+    protected Telemetry telemetry;
+    protected SkystoneContour skystoneContour;
 //    private PIDCoefficients pidCoefficientDistance;
 //    private PIDCoefficients pidCoefficientTurning;
-    private ElapsedTime timeX;
+    protected ElapsedTime timeX;
 
-    private static final int TICKS_PER_ROTATION = 679 * (4/3);
-    private static final int WHEEL_DIAMETER = 4;
-    private static final double BOT_DIAMETER = 17.5;
-    private static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
-    private ElapsedTime mRunTime;
-    private PIDcontroller tR, tL, bR, bL;
-    private double kP, kI, kD;
-    BNO055IMU imu;
-    Orientation lastAngles = new Orientation();
-    double globalAngle = 0;
+    protected static final int TICKS_PER_ROTATION = 679 * (4/3);
+    protected static final int WHEEL_DIAMETER = 4;
+    protected static final double BOT_DIAMETER = 17.5;
+    protected static final double BOT_CIRCUMFERENCE = Math.PI*BOT_DIAMETER;
+    protected ElapsedTime mRunTime;
+    protected PIDcontroller tR, tL, bR, bL;
+    protected double kP, kI, kD;
 
 //    private double p_distance = 0.05;
 //    private double i_distance = 0.0000004;
@@ -78,9 +75,9 @@ public class Drivetrain {
             parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
             parameters.loggingEnabled      = false;
 
-            imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-            imu.initialize(parameters);
+//            imu = hardwareMap.get(BNO055IMU.class, "imu");
+//
+//            imu.initialize(parameters);
 
 //            pidCoefficientDistance = new PIDCoefficients(p_distance, i_distance, d_distance);
 //            pidCoefficientTurning = new PIDCoefficients(p_turn, i_turn, d_turn);
@@ -103,28 +100,28 @@ public class Drivetrain {
         topRight.setPower(((x)+(-y)+(-z)));
     }
 
-    public double getAngle()
-    {
-        // We experimentally determined the Z axis is the axis we want to use for heading angle.
-        // We have to process the angle because the imu works in euler angles so the Z axis is
-        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
-        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
-
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
-
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
-
-        globalAngle += deltaAngle;
-
-        lastAngles = angles;
-
-        return globalAngle;
-    }
+//    public double getAngle()
+//    {
+//        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+//        // We have to process the angle because the imu works in euler angles so the Z axis is
+//        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+//        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+//
+//        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//
+//        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+//
+//        if (deltaAngle < -180)
+//            deltaAngle += 360;
+//        else if (deltaAngle > 180)
+//            deltaAngle -= 360;
+//
+//        globalAngle += deltaAngle;
+//
+//        lastAngles = angles;
+//
+//        return globalAngle;
+//    }
 
     public void improvedPIDdrive(double position) {
         double rotations = position / (WHEEL_DIAMETER * Math.PI);
@@ -234,9 +231,9 @@ public class Drivetrain {
         jigglypuff();
     }
 
-    public void turn(double degrees, double power) {
+    public void turn(double degrees, double power) throws InterruptedException {
         //TODO: Write method for turning
-        double rotations = degrees / 360 / 2.2;
+        double rotations = degrees / 360 / 1.7625;
         double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
         motorDrive(bottomLeft, position, power);
         motorDrive(bottomRight, -position, power);
@@ -246,36 +243,36 @@ public class Drivetrain {
         telemetry.addLine("Moved with position ticks: " + position);
     }
 
-    private void resetAngle()
-    {
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        globalAngle = 0;
-    }
+//    private void resetAngle()
+//    {
+//        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        globalAngle = 0;
+//    }
 
-    public void turnByIMU(double degrees, double power) {
-//        double rotations = degrees / 360 / 2.2;
-//        double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
-        motorRunWithoutEncoder();
-        if(degrees > 0) {
-            turnNoEncoder(power);
-        }
-        else {
-            turnNoEncoder(-power);
-        }
-        while(isRunning()) {
-            if (Math.abs(degrees) < Math.abs(getAngle())) {
-                stop();
-                break;
-            }
-            else {
-                telemetry.addLine("Angle" + getAngle());
-            }
-        }
-        stop();
-        motorRunByEncoder();
-        residentSleeper(250);
-        resetAngle();
-    }
+//    public void turnByIMU(double degrees, double power) {
+////        double rotations = degrees / 360 / 2.2;
+////        double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
+//        motorRunWithoutEncoder();
+//        if(degrees > 0) {
+//            turnNoEncoder(power);
+//        }
+//        else {
+//            turnNoEncoder(-power);
+//        }
+//        while(isRunning()) {
+//            if (Math.abs(degrees) < Math.abs(getAngle())) {
+//                stop();
+//                break;
+//            }
+//            else {
+//                telemetry.addLine("Angle" + getAngle());
+//            }
+//        }
+//        stop();
+//        motorRunByEncoder();
+//        residentSleeper(250);
+//        resetAngle();
+//    }
 
     public void arcTurn(double degrees, int radius, double power, boolean leftSideOuter) {
         double distanceOuter = calculateTicks(degrees / 360 * (2 * Math.PI) * (BOT_DIAMETER + radius));
@@ -403,12 +400,12 @@ public class Drivetrain {
 
     public void stop() {
         bottomLeft.setPower(0.0);
-        bottomLeft.setPower(0.0);
-        bottomLeft.setPower(0.0);
-        bottomLeft.setPower(0.0);
+        topLeft.setPower(0.0);
+        topRight.setPower(0.0);
+        bottomRight.setPower(0.0);
     }
 
-    private void motorDrive(DcMotor motor, double ticks, double power) {
+    protected void motorDrive(DcMotor motor, double ticks, double power) {
         //TODO: MotorDrive
         motor.setTargetPosition((int) ticks);
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -422,11 +419,11 @@ public class Drivetrain {
         topRight.setPower(-power);
     }
 
-    private double calculateTicksRot(double inches) {
+    public double calculateTicksRot(double inches) {
         return (inches / WHEEL_DIAMETER) * TICKS_PER_ROTATION;
     }
 
-    private double calculateTicks(double inches) {
+    protected double calculateTicks(double inches) {
         return (inches / (WHEEL_DIAMETER * Math.PI) * TICKS_PER_ROTATION);
     }
 
