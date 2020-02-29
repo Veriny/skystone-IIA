@@ -14,6 +14,7 @@ public class Lift {
     //this one is the motor that controls the 4-bar
     private DcMotor v4bMotor;
     private Servo clawServo;
+    private Servo capServo;
     private int v4bMotorRestPos = 25;
     private int v4bMotorLiftPos = 325;
     private int v4bMotorLastResort = -850;
@@ -23,11 +24,13 @@ public class Lift {
     private int liftMotorDumpPos = 1200;
     private DcMotorControllerEx v4bControllerEx;
 
-    public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, boolean isAuto) {
+    public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, Servo capServo, boolean isAuto) {
 //        v4bControllerEx = (DcMotorControllerEx)v4bMotor.getController();
 //        PIDFCoefficients pidNew = new PIDFCoefficients(0, 0.0, 0.0, 0.004);
 //
 //        v4bControllerEx.setPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
+
+        this.capServo = capServo;
 
         if(isAuto) {
             this.liftMotor = liftMotor;
@@ -61,7 +64,12 @@ public class Lift {
         if(Math.abs(gp.right_stick_y) > 0.05) {
             //slows down the falling down of lift during teleOP
             if(gp.right_stick_y < 0) {
-                runLiftMotor(-gp.right_stick_y);
+                if(gp.left_trigger != 0) {
+                    runLiftMotor(-gp.right_stick_y * 2 / 3);
+                }
+                else{
+                    runLiftMotor(-gp.right_stick_y);
+                }
             }
             else {
                 //checks if lift goes below 0
@@ -69,7 +77,12 @@ public class Lift {
                     holdLiftMotor();
                 }
                 else {
-                    runLiftMotor(-gp.right_stick_y / 4);
+                    if(gp.left_trigger != 0) {
+                        runLiftMotor(-gp.right_stick_y / 6);
+                    }
+                    else{
+                        runLiftMotor(-gp.right_stick_y / 3);
+                    }
                 }
             }
         }
@@ -82,6 +95,13 @@ public class Lift {
         }
         else if(gp.dpad_down) {
             hold();
+        }
+
+        if(gp.dpad_left) {
+            holdCap();
+        }
+        else if(gp.dpad_right) {
+            dropCap();
         }
 
 
@@ -105,15 +125,23 @@ public class Lift {
     }
 
     public synchronized void runLiftMotor(double power) {
-        liftMotor.setPower(power * 0.75);
+        liftMotor.setPower(power);
     }
 
     public synchronized void hold() {
-        clawServo.setPosition(0.43);
+        clawServo.setPosition(0.5);
     }
 
     public synchronized void release() {
         clawServo.setPosition(0.2);
+    }
+
+    public synchronized void holdCap() {
+        capServo.setPosition(0.1);
+    }
+
+    public synchronized void dropCap() {
+        capServo.setPosition(0.5);
     }
 
     public synchronized void restV4BMotor() {
@@ -188,7 +216,7 @@ public class Lift {
 
 
     public void holdNoSync() {
-        clawServo.setPosition(0.45);
+        clawServo.setPosition(0.5);
     }
 
     public void releaseNoSync() {

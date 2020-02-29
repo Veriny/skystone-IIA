@@ -40,7 +40,7 @@ public class Gyrotrain extends Drivetrain{
 
     }
 
-    private void resetAngle() { //Basically resets the z angle back to zero lmao
+    public void resetAngle() { //Basically resets the z angle back to zero lmao
         prevAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         globalAngle = 0;
     }
@@ -75,8 +75,8 @@ public class Gyrotrain extends Drivetrain{
     }
 
     @Override
-    public void drive(double position, double power) {
-        double pos = (position / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
+    public void drive(double distance, double power) {
+        double pos = (distance / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
         resetAngle();
         motorDrive(topRight, pos, power);
         motorDrive(topLeft, pos, power);
@@ -118,45 +118,49 @@ public class Gyrotrain extends Drivetrain{
         resetEncoders();
     }
 
-    @Override
-    public void strafe(double distance, double power) {
-        double pos = (distance / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
-        resetAngle();
-        motorDrive(topRight, -pos, power);
-        motorDrive(topLeft, pos, power);
-        motorDrive(bottomRight, pos, power);
-        motorDrive(bottomLeft, -pos, power);
-        do {
-            telemetry.addData("Angle:", getAngle());
-            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
-            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
-            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
-            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
-            telemetry.addData("topLeft power", topLeft.getPower());
-            telemetry.addData("botLeft power", bottomLeft.getPower());
-            telemetry.addData("topRight power", topRight.getPower());
-            telemetry.addData("botRight power", bottomRight.getPower());
-
-            telemetry.update();
-            if (90 - getAngle() <= -1) {
-                if (distance < 0) tLbRcorrect(power);
-                else bLtRcorrect(power);
-            }
-            else if (90 - getAngle() >= 1) {
-                if (distance < 0) bLtRcorrect(power);
-                else tLbRcorrect(power);
-            }
-            else {
-                bottomRight.setPower(power);
-                topRight.setPower(power);
-                topLeft.setPower(power);
-                bottomLeft.setPower(power);
-            }
-        } while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
-                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()));
-        stop();
-        resetEncoders();
+    public void driveByEncoder(double distance, double power) {
+        super.drive(distance, power);
     }
+
+//    @Override
+//    public void strafe(double distance, double power) {
+//        double pos = (distance / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
+//        resetAngle();
+//        motorDrive(topRight, -pos, power);
+//        motorDrive(topLeft, pos, power);
+//        motorDrive(bottomRight, pos, power);
+//        motorDrive(bottomLeft, -pos, power);
+//        do {
+//            telemetry.addData("Angle:", getAngle());
+//            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+//            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+//            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+//            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+//            telemetry.addData("topLeft power", topLeft.getPower());
+//            telemetry.addData("botLeft power", bottomLeft.getPower());
+//            telemetry.addData("topRight power", topRight.getPower());
+//            telemetry.addData("botRight power", bottomRight.getPower());
+//
+//            telemetry.update();
+//            if (90 - getAngle() <= -1) {
+//                if (distance < 0) tLbRcorrect(power);
+//                else bLtRcorrect(power);
+//            }
+//            else if (90 - getAngle() >= 1) {
+//                if (distance < 0) bLtRcorrect(power);
+//                else tLbRcorrect(power);
+//            }
+//            else {
+//                bottomRight.setPower(power);
+//                topRight.setPower(power);
+//                topLeft.setPower(power);
+//                bottomLeft.setPower(power);
+//            }
+//        } while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+//                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()));
+//        stop();
+//        resetEncoders();
+//    }
 
     //Correction Methods
     private void tLbRcorrect(double power) {
@@ -235,6 +239,39 @@ public class Gyrotrain extends Drivetrain{
         sleep(250);
         resetAngle();
     }
+
+
+    public void turnFromLastReset(double degrees, double power) throws InterruptedException {
+        double degreeDiff = degrees + getAngle();
+        double correctedRotations = degreeDiff / 360 / 1.7625;
+        double correctedPosition = calculateTicksRot(correctedRotations * BOT_CIRCUMFERENCE);
+        telemetry.addData("Corrected degrees", degreeDiff);
+        telemetry.addData("Corrected rotations", correctedRotations);
+        telemetry.addData("Corrected position", correctedPosition);
+        telemetry.update();
+        motorDrive(bottomLeft, correctedPosition, power);
+        motorDrive(bottomRight, -correctedPosition, power);
+        motorDrive(topLeft, correctedPosition, power);
+        motorDrive(topRight, -correctedPosition, power);
+        while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Corrected position", correctedPosition);
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
+
+            telemetry.update();
+        }
+        sleep(250);
+        resetAngle();
+    }
+
 
     private void turnWithoutEncoder(double power) {
         topLeft.setPower(power);
