@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -9,8 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Gyrotrain;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 
-@Autonomous(name="IMU Turn Test", group = "test")
-public class IMUTest extends LinearOpMode {
+@Autonomous(name="No Euler Test", group = "test")
+public class NoEulerTest extends LinearOpMode {
     public Gyrotrain robot;
     public Intake intake;
     public Lift lift;
@@ -24,10 +25,10 @@ public class IMUTest extends LinearOpMode {
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
 
         waitForStart();
-        robot.turn(-90, 0.5);
-        robot.residentSleeper(5000);
-        robot.drive(12, 0.8);
-        robot.residentSleeper(500);
-        robot.turn(-90, 0.5);
+        while(opModeIsActive()) {
+            telemetry.addData("Angle", robot.getNonEulerAngle());
+            telemetry.update();
+        }
     }
 }
+

@@ -39,14 +39,14 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(29, 0.6);   //added
+        robot.drive(29, 0.6, 2);   //added
         robot.residentSleeper(500);
         robot.strafe(6, 0.5);
         robot.turn(-90, 0.8);   //added
-        robot.drive(9, 0.5);
+        robot.drive(9, 0.4, 4);
         robot.residentSleeper(250);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-        robot.residentSleeper(1000);
+        robot.residentSleeper(500);
         vision.setSkystoneFalse();
 
         robot.update();
@@ -57,9 +57,9 @@ public class Auto_Red_Vision extends LinearOpMode {
 
 
         if (!vision.getStoneCentered()) {
-            robot.drive(8.5, 0.35);
+            robot.drive(8.5, 0.35, 3);
             count += 8.5;
-            robot.residentSleeper(750);
+            robot.residentSleeper(250);
         }
         else {
             foundSkystone = true;
@@ -70,7 +70,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         }
 
         if(foundSkystone) {
-            robot.drive(-9, 0.5);
+            robot.drive(-9, 0.5, 3);
             count -= 9;
         }
 
@@ -103,7 +103,7 @@ public class Auto_Red_Vision extends LinearOpMode {
 //                    telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
 //                    telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
 //                    telemetry.update();
-//                    robot.drive(9.5, 0.35);
+//                    robot.drive(9.5, 0.35);fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 //
 //                    //                vision.setSkystoneFalse();
 //                    robot.residentSleeper(500);
@@ -126,15 +126,14 @@ public class Auto_Red_Vision extends LinearOpMode {
         telemetry.update();
         robot.turn(60, 0.8);
         intake.succNoSync(0.69420);
-        robot.driveByEncoder(24, 0.4);  //changed
+        robot.drive(24, 0.4, 3);  //changed
         intake.noSuccNoSync();
         robot.residentSleeper(200);
-        robot.turnFromLastReset(0, 0.5);
         // robot.strafe(-6, 0.5);
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
-        robot.driveByEncoder(-25, 0.8);
+        robot.drive(-25, 0.8, 3);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(100);
         lift.restV4BMotorNoSync();
@@ -144,17 +143,15 @@ public class Auto_Red_Vision extends LinearOpMode {
 
         phoneCam.stopStreaming();
         robot.turn(-60, 0.8); //changed
-        robot.driveByEncoder(-98  - count, 0.9);  //changed
+        robot.drive(-92  - count, 0.9, 4);  //changed
         robot.turn(-90, 0.8);
-
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(400);
         lift.dumpLiftMotorNoSync();
         robot.residentSleeper(800);    //changed
         lift.dumpV4BMotorNoSync();
         robot.residentSleeper(250);    //changed
-        robot.driveByEncoder(-14, 0.5); //changed
-        robot.resetAngle();
+        robot.drive(-18, 0.5, 3); //changed
         lift.dropLiftMotorNoSync();
         robot.residentSleeper(1000);
         lift.releaseNoSync();
@@ -168,9 +165,9 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.arcTurn(150, 11, 0.75, true);   //changed
         foundationClaw.restNoSync();
         robot.turnFromLastReset(90, 0.8);
-        robot.driveByEncoder(-20, 0.8);  //changed
+        robot.drive(-20, 0.8, 5);  //changed
         robot.strafe(24, 0.7);  //changed
-        robot.driveByEncoder(28, 0.8); //changed
+        robot.drive(28, 0.8, 5); //changed
 
 
 
