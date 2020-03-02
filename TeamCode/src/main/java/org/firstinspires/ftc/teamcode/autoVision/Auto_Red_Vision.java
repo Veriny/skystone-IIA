@@ -39,14 +39,12 @@ public class Auto_Red_Vision extends LinearOpMode {
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(29, 0.6, 2);   //added
-        robot.residentSleeper(500);
+        robot.drive(29, 0.7, 3);   //added
         robot.strafe(6, 0.5);
         robot.turn(-90, 0.8);   //added
-        robot.drive(9, 0.4, 4);
-        robot.residentSleeper(250);
+        robot.driveByEncoder(8.5, 0.6);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-        robot.residentSleeper(500);
+        robot.residentSleeper(750);
         vision.setSkystoneFalse();
 
         robot.update();
@@ -57,9 +55,9 @@ public class Auto_Red_Vision extends LinearOpMode {
 
 
         if (!vision.getStoneCentered()) {
-            robot.drive(8.5, 0.35, 3);
+            robot.driveByEncoder(8.5, 0.5);
             count += 8.5;
-            robot.residentSleeper(250);
+            robot.residentSleeper(500);
         }
         else {
             foundSkystone = true;
@@ -143,31 +141,30 @@ public class Auto_Red_Vision extends LinearOpMode {
 
         phoneCam.stopStreaming();
         robot.turn(-60, 0.8); //changed
-        robot.drive(-92  - count, 0.9, 4);  //changed
-        robot.turn(-90, 0.8);
+        robot.drive(-86  - count, 1.0, 3);  //changed
+//        robot.setNewAngle(-90);
+        robot.turnByEncoder(-90, 0.6);
+//        robot.turn(-90, 0.8);
         lift.liftV4BMotorNoSync();
-        robot.residentSleeper(400);
         lift.dumpLiftMotorNoSync();
-        robot.residentSleeper(800);    //changed
+        robot.drive(-14, 0.7, 3); //changed
         lift.dumpV4BMotorNoSync();
-        robot.residentSleeper(250);    //changed
-        robot.drive(-18, 0.5, 3); //changed
+        robot.residentSleeper(500);
         lift.dropLiftMotorNoSync();
-        robot.residentSleeper(1000);
+        robot.residentSleeper(500);
         lift.releaseNoSync();
         lift.dumpLiftMotorNoSync();
         foundationClaw.pushNoSync();
-        robot.residentSleeper(500);
         lift.restV4BMotorNoSync();
         robot.residentSleeper(500);
         lift.restLiftMotorNoSync();
         robot.residentSleeper(500);
-        robot.arcTurn(150, 11, 0.75, true);   //changed
+        robot.arcTurn(155, 11, 1.0, true);   //changed
         foundationClaw.restNoSync();
-        robot.turnFromLastReset(90, 0.8);
-        robot.drive(-20, 0.8, 5);  //changed
-        robot.strafe(24, 0.7);  //changed
-        robot.drive(28, 0.8, 5); //changed
+        robot.drive(-20, 1.0);  //changed
+        robot.turnFromLastReset(-90, 1.0);
+        robot.strafe(20, 1.0);  //changed
+        robot.drive(28, 1.0); //changed
 
 
 

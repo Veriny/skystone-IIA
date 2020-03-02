@@ -38,8 +38,15 @@ public class Gyrotrain extends Drivetrain{
         }
         telemetry.addData("Gyro calibrating...", false);
         telemetry.update();
+        resetAngle();
 
 
+    }
+
+
+    public void setNewAngle(double angle) {
+        totalAngle -= angle;
+        globalAngle += angle;
     }
 
     public void resetAngle() { //Basically resets the z angle back to zero lmao
@@ -85,6 +92,7 @@ public class Gyrotrain extends Drivetrain{
 
 
     public void drive(double distance, double power, double threshold) {
+        double currentAngle = totalAngle;
         double pos = (distance / (WHEEL_DIAMETER * Math.PI * 2)) * 1440;
         motorDrive(topRight, pos, power);
         motorDrive(topLeft, pos, power);
@@ -102,7 +110,7 @@ public class Gyrotrain extends Drivetrain{
             telemetry.addData("botRight power", bottomRight.getPower());
 
             telemetry.update();
-            if (getAngle() <= -threshold) {
+            if (currentAngle + getAngle() <= -threshold) {
                 if (distance > 0){
                     topLeft.setPower(power - ANGLE_CORRECTION);
                     bottomLeft.setPower(power - ANGLE_CORRECTION);
@@ -116,7 +124,7 @@ public class Gyrotrain extends Drivetrain{
                     topLeft.setPower(power);
                 }
             }
-            else if (getAngle() >= threshold) {
+            else if (currentAngle + getAngle() >= threshold) {
                 if (distance > 0){
                     bottomRight.setPower(power - ANGLE_CORRECTION);
                     topRight.setPower(power - ANGLE_CORRECTION);
@@ -207,6 +215,10 @@ public class Gyrotrain extends Drivetrain{
         motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
+    public void turnByEncoder(double degrees, double power) throws InterruptedException {
+        super.turn(degrees, power);
+    }
+
     @Override
     public void turn(double degrees, double power) throws InterruptedException {
         double rotations = degrees / 360 / 1.7625;
@@ -218,6 +230,7 @@ public class Gyrotrain extends Drivetrain{
         motorDrive(topRight, -position, power);
         while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
                 (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Total Angle", totalAngle);
             telemetry.addData("Angle:", getAngle());
             telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
             telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
@@ -231,15 +244,17 @@ public class Gyrotrain extends Drivetrain{
             telemetry.update();
         }
         sleep(250);
+        totalAngle += degrees;
         resetEncoders();
         telemetry.addData("Encoder turn complete", degrees);
         double degreeDiff = 0;
-        if(degrees >= 0) {
-            degreeDiff = degrees - Math.abs(getAngle());
+        if(totalAngle >= 0) {
+            degreeDiff = totalAngle - Math.abs(getAngle());
         }
         else {
-            degreeDiff = degrees + Math.abs(getAngle());
+            degreeDiff = totalAngle + Math.abs(getAngle());
         }
+
         double correctedRotations = degreeDiff / 360 / 1.7625;
         double correctedPosition = calculateTicksRot(correctedRotations * BOT_CIRCUMFERENCE);
         telemetry.addData("Corrected degrees", degreeDiff);
@@ -252,6 +267,7 @@ public class Gyrotrain extends Drivetrain{
         motorDrive(topRight, -correctedPosition, power);
         while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
                 (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Total Angle", totalAngle);
             telemetry.addData("Corrected degrees", degreeDiff);
             telemetry.addData("Corrected position", correctedPosition);
             telemetry.addData("Angle:", getAngle());
@@ -271,7 +287,15 @@ public class Gyrotrain extends Drivetrain{
 
 
     public void turnFromLastReset(double degrees, double power) throws InterruptedException {
-        double degreeDiff = degrees + getAngle();
+        totalAngle += degrees;
+        double degreeDiff = 0;
+        if(totalAngle >= 0) {
+            degreeDiff = totalAngle - Math.abs(getAngle());
+        }
+        else {
+            degreeDiff = totalAngle + Math.abs(getAngle());
+        }
+
         double correctedRotations = degreeDiff / 360 / 1.7625;
         double correctedPosition = calculateTicksRot(correctedRotations * BOT_CIRCUMFERENCE);
         telemetry.addData("Corrected degrees", degreeDiff);
@@ -284,6 +308,8 @@ public class Gyrotrain extends Drivetrain{
         motorDrive(topRight, -correctedPosition, power);
         while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
                 (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Total Angle", totalAngle);
+            telemetry.addData("Corrected degrees", degreeDiff);
             telemetry.addData("Corrected position", correctedPosition);
             telemetry.addData("Angle:", getAngle());
             telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());

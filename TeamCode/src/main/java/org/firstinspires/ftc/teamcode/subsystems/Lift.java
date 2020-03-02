@@ -15,7 +15,7 @@ public class Lift {
     private DcMotor v4bMotor;
     private Servo clawServo;
     private Servo capServo;
-    private int v4bMotorRestPos = 25;
+    private int v4bMotorRestPos = 50;
     private int v4bMotorLiftPos = 325;
     private int v4bMotorLastResort = -850;
     private int v4bMotorDumpPos = -525;

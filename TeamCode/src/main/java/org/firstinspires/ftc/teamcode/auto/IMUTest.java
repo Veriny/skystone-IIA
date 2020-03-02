@@ -26,8 +26,9 @@ public class IMUTest extends LinearOpMode {
         waitForStart();
         robot.turn(-90, 0.5);
         robot.residentSleeper(5000);
-        robot.drive(12, 0.8);
+        robot.drive(24, 0.8);
         robot.residentSleeper(500);
+        robot.setNewAngle(-90);
         robot.turn(-90, 0.5);
     }
 }
