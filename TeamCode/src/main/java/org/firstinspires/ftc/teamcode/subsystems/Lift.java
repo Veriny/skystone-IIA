@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 public class Lift {
     private DcMotor liftMotor;
@@ -22,14 +24,15 @@ public class Lift {
     private int liftMotorRestPos = 50;
     private int liftMotorDropPos = 300;
     private int liftMotorDumpPos = 1200;
+    private Telemetry telemetry;
     private DcMotorControllerEx v4bControllerEx;
 
-    public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, Servo capServo, boolean isAuto) {
+    public Lift(DcMotor liftMotor, DcMotor v4bMotor, Servo clawServo, Servo capServo, boolean isAuto, Telemetry t) {
 //        v4bControllerEx = (DcMotorControllerEx)v4bMotor.getController();
 //        PIDFCoefficients pidNew = new PIDFCoefficients(0, 0.0, 0.0, 0.004);
 //
 //        v4bControllerEx.setPIDFCoefficients(0, DcMotor.RunMode.RUN_USING_ENCODER, pidNew);
-
+        telemetry = t;
         this.capServo = capServo;
 
         if(isAuto) {
@@ -99,6 +102,7 @@ public class Lift {
 
         if(gp.dpad_left) {
             holdCap();
+
         }
         else if(gp.dpad_right) {
             dropCap();
@@ -138,10 +142,14 @@ public class Lift {
 
     public synchronized void holdCap() {
         capServo.setPosition(0.1);
+        telemetry.addData("Capservo Position", capServo.getPosition());
+        telemetry.update();
     }
 
     public synchronized void dropCap() {
         capServo.setPosition(0.5);
+        telemetry.addData("Capservo Position", capServo.getPosition());
+        telemetry.update();
     }
 
     public synchronized void restV4BMotor() {

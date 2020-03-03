@@ -27,7 +27,7 @@ public class Auto_Red_Vision extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         robot = new Gyrotrain(hardwareMap.dcMotor.get("topLeftMotor"), hardwareMap.dcMotor.get("bottomLeftMotor"), hardwareMap.dcMotor.get("topRightMotor"), hardwareMap.dcMotor.get("bottomRightMotor"), true, telemetry, hardwareMap);
         intake = new Intake(hardwareMap.dcMotor.get("leftIntake"), hardwareMap.dcMotor.get("rightIntake"));
-        lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), hardwareMap.servo.get("capServo"), true);
+        lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), hardwareMap.servo.get("capServo"), true, telemetry);
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
@@ -42,7 +42,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.drive(29, 0.7, 3);   //added
         robot.strafe(6, 0.5);
         robot.turn(-90, 0.8);   //added
-        robot.driveByEncoder(8.5, 0.6);
+        robot.drive(8.5, 0.35);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
         robot.residentSleeper(750);
         vision.setSkystoneFalse();
@@ -55,9 +55,9 @@ public class Auto_Red_Vision extends LinearOpMode {
 
 
         if (!vision.getStoneCentered()) {
-            robot.driveByEncoder(8.5, 0.5);
+            robot.drive(8.5, 0.35);
             count += 8.5;
-            robot.residentSleeper(500);
+            robot.residentSleeper(1000);
         }
         else {
             foundSkystone = true;
@@ -122,7 +122,7 @@ public class Auto_Red_Vision extends LinearOpMode {
         telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
         telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
         telemetry.update();
-        robot.turn(60, 0.8);
+        robot.turn(62.5, 0.8);
         intake.succNoSync(0.69420);
         robot.drive(24, 0.4, 3);  //changed
         intake.noSuccNoSync();
@@ -131,23 +131,24 @@ public class Auto_Red_Vision extends LinearOpMode {
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
-        robot.drive(-25, 0.8, 3);
+        robot.drive(-25, 1.0);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(100);
         lift.restV4BMotorNoSync();
-        robot.residentSleeper(400);
+        robot.residentSleeper(300);
         lift.holdNoSync();
         //robot.strafe(8, 0.4);
 
         phoneCam.stopStreaming();
-        robot.turn(-60, 0.8); //changed
+        robot.turn(-62.5, 0.8); //changed
         robot.drive(-86  - count, 1.0, 3);  //changed
 //        robot.setNewAngle(-90);
+        robot.residentSleeper(250);
+        robot.turn(0, 0.5);
         robot.turnByEncoder(-90, 0.6);
 //        robot.turn(-90, 0.8);
-        lift.liftV4BMotorNoSync();
         lift.dumpLiftMotorNoSync();
-        robot.drive(-14, 0.7, 3); //changed
+        robot.drive(-14, 0.7); //changed
         lift.dumpV4BMotorNoSync();
         robot.residentSleeper(500);
         lift.dropLiftMotorNoSync();
@@ -162,8 +163,9 @@ public class Auto_Red_Vision extends LinearOpMode {
         robot.arcTurn(155, 11, 1.0, true);   //changed
         foundationClaw.restNoSync();
         robot.drive(-20, 1.0);  //changed
-        robot.turnFromLastReset(-90, 1.0);
-        robot.strafe(20, 1.0);  //changed
+        robot.turn(0, 1.0);
+        robot.strafe(24, 1.0);  //changed
+        robot.residentSleeper(250);
         robot.drive(28, 1.0); //changed
 
 
