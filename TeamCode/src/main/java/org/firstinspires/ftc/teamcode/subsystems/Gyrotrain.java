@@ -23,7 +23,7 @@ public class Gyrotrain extends Drivetrain{
     private static double globalAngle = 0;
     private double totalAngle = 0;
     private double xToDoubt;
-    private static final double ANGLE_CORRECTION = .05;
+    private static final double ANGLE_CORRECTION = .2;
     public Gyrotrain(DcMotor tl, DcMotor bl, DcMotor tr, DcMotor br, Boolean isAuto, Telemetry t, HardwareMap h) throws InterruptedException{
         super(tl, bl, tr, br, isAuto, t, h);
         telemetry.addData("Gyro calibrating...", true);

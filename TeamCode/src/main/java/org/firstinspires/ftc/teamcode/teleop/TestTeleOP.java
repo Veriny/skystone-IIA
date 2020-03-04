@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 
 
-@TeleOp(name = "TestOPMode", group = "jerW" )
+@TeleOp(name = "Don't quote me on 'actually teleop,' please make it 'teleop'", group = "jerW" )
 public class TestTeleOP extends OpMode {
     //TODO: Create instance variable for drivetrain
     public Drivetrain drivetrain;

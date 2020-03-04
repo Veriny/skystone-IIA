@@ -11,7 +11,7 @@ public class FoundationClaw {
     private final double restPositionA = 0.9;
     private final double restPositionB = 0.1;
     private final double pushPositionA = 0.175;
-    private final double pushPositionB = 0.85;
+    private final double pushPositionB = 0.875;
     public FoundationClaw(Servo a, Servo b) {
         this.servoA = a;
         this.servoB = b;
