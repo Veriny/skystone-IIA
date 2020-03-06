@@ -39,8 +39,6 @@ public class Gyrotrain extends Drivetrain{
         telemetry.addData("Gyro calibrating...", false);
         telemetry.update();
         resetAngle();
-
-
     }
 
 
@@ -283,6 +281,7 @@ public class Gyrotrain extends Drivetrain{
             telemetry.update();
         }
         sleep(250);
+        resetEncoders();
     }
 
 

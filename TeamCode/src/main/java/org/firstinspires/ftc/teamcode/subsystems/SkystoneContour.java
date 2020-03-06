@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -31,16 +32,16 @@ public class SkystoneContour extends OpenCvPipeline {
     private double skystoneXPos, skystoneYPos;
     private double area;
     //Important
-    private double UPPER_X = 150;
-    private double LOWER_X = 80;
+    private double UPPER_X = 160;
+    private double LOWER_X = 70;
 //    private double pos1Left_X = 20;
 //    private double pos1Right_X = 120;
 //    private double pos2Left_X = 120;
 //    private double pos2Right_X = 220;
 //    private double pos3Left_X = 220;
 //    private double pos3Right_X = 320;
-    private double UPPER_Y = 65;
-    private double LOWER_Y = 35;
+    private double UPPER_Y = 70;
+    private double LOWER_Y = 0;
     private List<MatOfPoint> contours = new ArrayList<>();
     private boolean showContours, isAccessible = true;
     private boolean found, skystoneIsCentered = false;
@@ -97,7 +98,7 @@ public class SkystoneContour extends OpenCvPipeline {
                 ADJUSTED_X = boundingRect.tl().x;
                 ADJUSTED_Y = boundingRect.tl().y;
                 double matArea = Imgproc.contourArea(tempMat);
-                boolean matAreaInBounds = (matArea > 15000) && (matArea < 100000000);
+                boolean matAreaInBounds = (matArea > 10000) && (matArea < 100000000);
 
                 if (x > LOWER_X && x < UPPER_X &&
                         y > LOWER_Y && y < UPPER_Y && matAreaInBounds||
@@ -133,6 +134,8 @@ public class SkystoneContour extends OpenCvPipeline {
             found2 = pos2;
             found3 = pos3;
         }
+
+        Imgproc.rectangle(thresholded, new Point(LOWER_X, LOWER_Y), new Point(UPPER_X, UPPER_Y), new Scalar(255), 4);
         return thresholded;
     }
 

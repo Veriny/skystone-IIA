@@ -100,11 +100,11 @@ public class Lift {
             hold();
         }
 
-        if(gp.dpad_left) {
+        if(gp.left_bumper) {
             holdCap();
 
         }
-        else if(gp.dpad_right) {
+        else if(gp.right_bumper) {
             dropCap();
         }
 
@@ -195,7 +195,7 @@ public class Lift {
     public void dropLiftMotorNoSync() {
         liftMotor.setTargetPosition(liftMotorDropPos);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftMotor.setPower(0.5);
+        liftMotor.setPower(0.4);
     }
 
     public void dumpLiftMotorNoSync() {
