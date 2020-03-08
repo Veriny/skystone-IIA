@@ -79,7 +79,7 @@ public class SkystoneContour extends OpenCvPipeline {
         yuv = input.clone();
         Imgproc.cvtColor(input, yuv, Imgproc.COLOR_BGR2HSV);
         //Create a binary image with the upper and lower bounds of the colors we want.
-        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(255,255,90), thresholded);
+        Core.inRange(yuv, new Scalar(0, 0, 0), new Scalar(255,255,90),thresholded);
         //Now, we erode the binary image to get rid of any dirtiness.
         structElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 5));
         //Eroding the image allows us to better locate the skystone, as the border walls of the playing field are black as well

@@ -76,7 +76,7 @@ public class Lift {
             }
             else {
                 //checks if lift goes below 0
-                if(liftMotor.getCurrentPosition() <= 25) {
+                if(liftMotor.getCurrentPosition() <= -100) {
                     holdLiftMotor();
                 }
                 else {
@@ -141,13 +141,13 @@ public class Lift {
     }
 
     public synchronized void holdCap() {
-        capServo.setPosition(0.1);
+        capServo.setPosition(0.2);
         telemetry.addData("Capservo Position", capServo.getPosition());
         telemetry.update();
     }
 
     public synchronized void dropCap() {
-        capServo.setPosition(0.5);
+        capServo.setPosition(0.6);
         telemetry.addData("Capservo Position", capServo.getPosition());
         telemetry.update();
     }

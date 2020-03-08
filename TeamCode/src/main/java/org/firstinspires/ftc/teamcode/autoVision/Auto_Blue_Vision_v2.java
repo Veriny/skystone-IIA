@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.autoVision;
 
+import android.hardware.Camera;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.FoundationClaw;
+import org.firstinspires.ftc.teamcode.subsystems.Gyrotrain;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.SkystoneContour;
@@ -13,18 +16,21 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
-@Autonomous(name="RED Vision Test2", group = "test")
-public class Auto_Red_Vision_Tester2 extends LinearOpMode {
-    public Drivetrain robot;
+import java.lang.reflect.Parameter;
+
+@Autonomous(name="BLUE BLUE BLUE V2(VISION)_Collect_Deposit_Foundation_Park", group = "test")
+public class Auto_Blue_Vision_v2 extends LinearOpMode {
+    public Gyrotrain robot;
     public Intake intake;
     public Lift lift;
     public FoundationClaw foundationClaw;
     public SkystoneContour vision;
     public OpenCvCamera phoneCam;
+    public static Camera cam;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new Drivetrain(hardwareMap.dcMotor.get("topLeftMotor"), hardwareMap.dcMotor.get("bottomLeftMotor"), hardwareMap.dcMotor.get("topRightMotor"), hardwareMap.dcMotor.get("bottomRightMotor"), true, telemetry, hardwareMap);
+        robot = new Gyrotrain(hardwareMap.dcMotor.get("topLeftMotor"), hardwareMap.dcMotor.get("bottomLeftMotor"), hardwareMap.dcMotor.get("topRightMotor"), hardwareMap.dcMotor.get("bottomRightMotor"), true, telemetry, hardwareMap);
         intake = new Intake(hardwareMap.dcMotor.get("leftIntake"), hardwareMap.dcMotor.get("rightIntake"));
         lift = new Lift(hardwareMap.dcMotor.get("liftMotor"), hardwareMap.dcMotor.get("v4bMotor"), hardwareMap.servo.get("clawServo"), hardwareMap.servo.get("capServo"), true, telemetry);
         foundationClaw = new FoundationClaw(hardwareMap.servo.get("leftFoundationServo"), hardwareMap.servo.get("rightFoundationServo"));
@@ -32,35 +38,40 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         vision = new SkystoneContour();
 
+        robot.resetEncoders();
         waitForStart();
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(vision);
         lift.releaseNoSync();
         robot.update();
 //        robot.strafe(24, 0.4); //changed
-        robot.drive(29, 0.6);   //added
-        robot.residentSleeper(500);
-        robot.strafe(6, 0.6);
-        robot.turn(-110, 0.5);   //added
-        robot.drive(9, 0.5);
-        robot.residentSleeper(250);
+        robot.drive(28.5, 0.4, 1.5);   //added
+        robot.turnKindaByEncoder(-90, 0.8);   //added
+        robot.drive(6.5, 0.5, 1.5);
+//        cam = Camera.open();
+//        Camera.Parameters p = cam.getParameters();
+//        p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//        cam.setParameters(p);
+//        cam.unlock();
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+        robot.residentSleeper(500);
+//        vision.setSkystoneFalse();
         robot.residentSleeper(1000);
-        vision.setSkystoneFalse();
-
         robot.update();
         lift.liftV4BMotorNoSync();
 
         boolean foundSkystone = false;
         int count = 0;
 
+        boolean firstStone = false;
 
         if (!vision.getStoneCentered()) {
-            robot.drive(8.5, 0.35);
-            count += 8.5;
-            robot.residentSleeper(750);
+            robot.drive(-7.5, 0.5, 1.5);
+            count -= 7.5;
+            robot.residentSleeper(1000);
         }
         else {
+            firstStone = true;
             foundSkystone = true;
         }
 
@@ -68,8 +79,17 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
             foundSkystone = true;
         }
 
-        if(foundSkystone) {
-            robot.drive(-9, 0.5);
+        if(foundSkystone && !firstStone) {
+            robot.drive(-11, 0.6);
+            count -= 10.5;
+        }
+        else if(firstStone){
+            robot.drive(-10, 0.6);
+            count -= 10;
+        }
+        else {
+            robot.drive(-20.5, 0.6);
+            count -= 20;
         }
 
         telemetry.addData("contourCount", vision.getContoursFound());
@@ -101,7 +121,7 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
 //                    telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
 //                    telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
 //                    telemetry.update();
-//                    robot.drive(9.5, 0.35);
+//                    robot.drive(9.5, 0.35);fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 //
 //                    //                vision.setSkystoneFalse();
 //                    robot.residentSleeper(500);
@@ -122,55 +142,54 @@ public class Auto_Red_Vision_Tester2 extends LinearOpMode {
         telemetry.addData("SkystoneXPos", vision.getSkystoneCameraXPos());
         telemetry.addData("SkystoneYPos", vision.getSkystoneCameraYPos());
         telemetry.update();
-        robot.turn(80, 0.4);
-        intake.succNoSync(0.69420);
-        robot.drive(24, 0.4);  //changed
+        robot.turn(63, 0.8);
+        intake.succNoSync(0.69420 * 0.9);
+        robot.drive(24, 0.4, 3);  //changed
         intake.noSuccNoSync();
-        robot.residentSleeper(200);
-       // robot.strafe(-6, 0.5);
+        // robot.strafe(-6, 0.5);
+//        cam.stopPreview();
+//        cam.release();
 
         lift.restV4BMotorNoSync();
         robot.residentSleeper(250);
-        robot.drive(-25, 0.8);
+        robot.drive(-25, 1.0);
         lift.liftV4BMotorNoSync();
         robot.residentSleeper(100);
         lift.restV4BMotorNoSync();
-        robot.residentSleeper(400);
+        robot.residentSleeper(300);
         lift.holdNoSync();
         //robot.strafe(8, 0.4);
 
         phoneCam.stopStreaming();
-        robot.turn(30, 0.4); //changed
-        robot.strafe(count, 0.5);
-        robot.drive(-26, 0.5);
-//        robot.drive(-74  - count, 0.9);  //changed
-//        robot.turn(-110, 0.5);
-//
-//        lift.liftV4BMotorNoSync();
-//        robot.residentSleeper(400);
-//        lift.dumpLiftMotorNoSync();
-//        robot.residentSleeper(800);    //changed
-//        lift.dumpV4BMotorNoSync();
-//        robot.residentSleeper(250);    //changed
-//        robot.drive(-18, 0.45); //changed
-//        lift.dropLiftMotorNoSync();
-//        robot.residentSleeper(1000);
-//        lift.releaseNoSync();
-//        lift.dumpLiftMotorNoSync();
-//        foundationClaw.pushNoSync();
-//        robot.residentSleeper(500);
-//        lift.restV4BMotorNoSync();
-//        robot.residentSleeper(500);
-//        lift.restLiftMotorNoSync();
-//        robot.residentSleeper(500);
-//        robot.arcTurn(150, 11, 0.65, true);   //changed
-//        foundationClaw.restNoSync();
-//
-//        robot.drive(-20, 0.8);  //changed
-//        robot.strafe(23, 0.7);  //changed
-//        robot.drive(28, 0.8); //changed
-//
-//
+        robot.turn(-63, 1.0); //changed
+        robot.drive(80 - count, 1.0, 1);  //changed
+//        robot.setNewAngle(-90);
+        robot.residentSleeper(100);
+        robot.turn(0, 0.8);
+        lift.dumpLiftMotorNoSync();
+        robot.turnByEncoder(-90, 0.6);
+//        robot.turn(-90, 0.8);
+        lift.dumpV4BMotorNoSync();
+        robot.drive(-16, 0.7); //changed
+        lift.dropLiftMotorNoSync();
+        robot.residentSleeper(600);
+        foundationClaw.pushNoSync();
+        lift.releaseNoSync();
+        lift.dumpLiftMotorNoSync();
+        robot.residentSleeper(500);
+        lift.restV4BMotorNoSync();
+        robot.arcTurn(155, 10, 1.0, false);   //changed
+        lift.restLiftMotorNoSync();
+        foundationClaw.restNoSync();
+        robot.drive(-18, 1.0);  //changed
+        intake.dontsuccNoSync(0.69);
+        robot.turn(0, 1.0);
+        robot.strafe(-20, 1.0);  //changed
+        intake.noSuccNoSync();
+        //robot.residentSleeper(250);
+        robot.drive(40, 1.0); //changed
+
+
 
     }
 }

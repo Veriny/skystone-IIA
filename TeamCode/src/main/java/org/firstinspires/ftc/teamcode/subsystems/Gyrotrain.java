@@ -217,6 +217,35 @@ public class Gyrotrain extends Drivetrain{
         super.turn(degrees, power);
     }
 
+    public void turnKindaByEncoder(double degrees, double power) throws InterruptedException {
+        double rotations = degrees / 360 / 1.7625;
+        double position = calculateTicksRot(rotations * BOT_CIRCUMFERENCE);
+        sleep(100);
+        motorDrive(bottomLeft, position, power);
+        motorDrive(bottomRight, -position, power);
+        motorDrive(topLeft, position, power);
+        motorDrive(topRight, -position, power);
+        while ((topLeft.isBusy() && topRight.isBusy() && bottomLeft.isBusy()) || (topLeft.isBusy() && topRight.isBusy() && bottomRight.isBusy()) ||
+                (topLeft.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy()) || (topRight.isBusy() && bottomLeft.isBusy() && bottomRight.isBusy())) {
+            telemetry.addData("Total Angle", totalAngle);
+            telemetry.addData("Angle:", getAngle());
+            telemetry.addData("topRight position", topRight.getTargetPosition() - topRight.getCurrentPosition());
+            telemetry.addData("botRight position", bottomRight.getTargetPosition() - bottomRight.getCurrentPosition());
+            telemetry.addData("topLeft position", topLeft.getTargetPosition() - topLeft.getCurrentPosition());
+            telemetry.addData("botLeft position", bottomLeft.getTargetPosition() - bottomLeft.getCurrentPosition());
+            telemetry.addData("topLeft power", topLeft.getPower());
+            telemetry.addData("botLeft power", bottomLeft.getPower());
+            telemetry.addData("topRight power", topRight.getPower());
+            telemetry.addData("botRight power", bottomRight.getPower());
+
+            telemetry.update();
+        }
+        sleep(100);
+        totalAngle += degrees;
+        resetEncoders();
+        telemetry.addData("Encoder turn complete", degrees);
+    }
+
     @Override
     public void turn(double degrees, double power) throws InterruptedException {
         double rotations = degrees / 360 / 1.7625;
@@ -241,7 +270,7 @@ public class Gyrotrain extends Drivetrain{
 
             telemetry.update();
         }
-        sleep(250);
+        sleep(150);
         totalAngle += degrees;
         resetEncoders();
         telemetry.addData("Encoder turn complete", degrees);
